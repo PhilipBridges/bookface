@@ -1,0 +1,31 @@
+# import Post, Message from "./generated/prisma.graphql"
+
+type Query {
+  feed: [Post!]!
+  post(id: ID!): Post!
+  me: User
+  userQuery: [User!]
+  messageQuery(first: Int, after: String, before: String, last: Int, orderBy: MessageOrderByInput): [Message!]!
+}
+
+type Mutation {
+  signup(email: String!, password: String!, name: String!): AuthPayload!
+  login(email: String!, password: String!): AuthPayload!
+  createPost(title: String!, text: String!): Post!
+  deletePost(id: ID!): Post!
+  createMessage(text: String!, target: String!): Message!
+  deleteMessage(id: ID!): Message
+}
+
+type AuthPayload {
+  token: String
+  user: User
+  error: String
+}
+
+type User {
+  id: ID
+  email: String
+  name: String
+  posts: [Post!]
+}

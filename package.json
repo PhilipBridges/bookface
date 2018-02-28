@@ -1,0 +1,44 @@
+{
+  "name": "bookface",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "prettier-eslint-cli": "4.7.1",
+    "react-scripts": "1.1.1"
+  },
+  "dependencies": {
+    "apollo-cache-inmemory": "1.1.9",
+    "apollo-client": "2.2.5",
+    "apollo-link": "1.2.1",
+    "apollo-link-context": "^1.0.7",
+    "apollo-link-http": "1.5.1",
+    "apollo-link-ws": "^1.0.7",
+    "dotenv": "^5.0.1",
+    "formik": "^0.11.11",
+    "graphql": "0.13.1",
+    "graphql-tag": "2.8.0",
+    "jwt-decode": "^2.2.0",
+    "micro": "^9.1.0",
+    "micro-cors": "^0.1.0",
+    "moment": "^2.20.1",
+    "react": "16.2.0",
+    "react-apollo": "2.0.4",
+    "react-dom": "16.2.0",
+    "react-modal": "3.3.1",
+    "react-router-dom": "4.2.2",
+    "semantic-ui-css": "^2.3.0",
+    "semantic-ui-react": "^0.78.2",
+    "styled-components": "^3.1.6",
+    "subscriptions-transport-ws": "^0.9.6",
+    "tachyons": "4.9.1",
+    "yup": "^0.24.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "prettier": "prettier-eslint --write \"src/**/*.+(js|jsx)\"",
+    "prettier-dry-run": "prettier-eslint \"src/**/*.+(js|jsx)\" -l debug"
+  }
+}
