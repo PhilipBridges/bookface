@@ -77,7 +77,6 @@ class Profile extends React.Component {
       )
     }
 
-
     const messages = this.props.messageQuery.messageQuery
     const user = this.props.userQuery.me
 

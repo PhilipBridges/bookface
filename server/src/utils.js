@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken')
     const { userId } = jwt.verify(token, 'secret123')
     return userId
   }
-
   throw new AuthError()
 }
 

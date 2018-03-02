@@ -1,10 +1,6 @@
 import React from 'react'
-import {
-  NavLink,
-  Link,
-} from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-import { graphql, compose } from 'react-apollo'
+import { graphql, compose, withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import { setContext } from 'apollo-link-context'
@@ -13,118 +9,78 @@ import 'semantic-ui-css/semantic.min.css';
 import 'tachyons'
 import '../index.css'
 
-import { Sidebar, Segment, Button, Menu, Image, Icon } from 'semantic-ui-react'
-
-import TempHeader from './TempHeader'
+import { Menu } from 'semantic-ui-react'
 
 class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeItem: 'home',
+    }
+  }
 
-  logout = (e) => {
+  handleItemClick = (e, { name }) => this.setState({ activeItem: name }, this.props.history.push(`${name}`))
+
+  logout = async (e) => {
     setContext(() => ({
       headers: {
         "Authorization": localStorage.removeItem("token"),
       }
     }))
     localStorage.removeItem("token")
+    this.props.client.resetStore()
     this.props.history.replace("/")
   };
 
-  
-
   componentWillReceiveProps(nextProps) {
-    if (this.props.location.key !== nextProps.location.key) {
+    if (this.props.location.key !== nextProps.location.key && this.props.userQuery) {
       this.props.userQuery.refetch()
     }
   }
 
   render() {
-    if (this.props.userQuery.loading) {
-      return <TempHeader />
-    }
+    const authed = localStorage.getItem("token")
+    const { activeItem } = this.state
 
     return (
-      <nav className="pa3 pa4-ns">
-        <NavLink
-          className="link dim f6 f5-ns dib mr3 black"
-          activeClassName="gray"
-          exact={true}
-          to="/"
-          title="Feed"
-        >
-          Feed
-        </NavLink>
-        {this.props.isAuthed && <NavLink
-          className="link dim f6 f5-ns dib mr3 black"
-          activeClassName="gray"
-          exact={true}
-          to="/profile"
-          title="Profile"
-        >
-          Profile
-        </NavLink>
-        }
-        {!this.props.isAuthed &&
-          <NavLink
-            className="link dim f6 f5-ns dib mr3 black"
-            activeClassName="gray"
-            exact={true}
-            to="/register"
-            title="Register"
-          >
-            Register
-          </NavLink>}
-        {!this.props.isAuthed ?
-          <NavLink
-            className="link dim f6 f5-ns dib mr3 black"
-            activeClassName="gray"
-            exact={true}
-            to="/login"
-            title="Login"
-          >
-            Login
-          </NavLink>
+      <Menu inverted>
+        <Menu.Item name='/' active={activeItem === 'home'} onClick={this.handleItemClick}>Home</Menu.Item>
+        {authed
+          ?
+          <React.Fragment>
+            <Menu.Item name='messages' active={activeItem === 'messages'} onClick={this.handleItemClick} />
+            <Menu.Item name='friends' active={activeItem === 'friends'} onClick={this.handleItemClick} />
+            <Menu.Item name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick}>Profile</Menu.Item>
+            <Menu.Item name='logout' active={activeItem === 'logout'} onClick={this.logout} />
+          </React.Fragment>
           :
-          <NavLink
-            className="link dim f6 f5-ns dib mr3 black"
-            activeClassName="gray"
-            exact={true}
-            to="/"
-            title="logout"
-            onClick={this.logout}
-          >
-            Logout
-          </NavLink>
+          <React.Fragment>
+            <Menu.Item name='register' active={activeItem === 'register'} onClick={this.handleItemClick} />
+            <Menu.Item name='login' active={activeItem === 'login'} onClick={this.handleItemClick} />
+          </React.Fragment>
         }
-
-        <Link
-          to="/create"
-          className="f6 link dim br1 ba ph3 pv2 fr mb2 dib black"
-        >
-          + Create Post
-          </Link>
-      </nav>
+      </Menu>
     )
-
   }
 }
 
+
 const ME_QUERY = gql`
   query userQuery {
-    me {
-      id
-      name
-    }
-}
-`
+      me {
+        id
+        name
+      }
+  }
+  `
 
 export default compose(
+  withApollo,
   graphql(ME_QUERY, {
     name: "userQuery",
-    optimisticResponse: {
-      __typename: "User",
-      me: {
-        name: "User",
-      }
-    }
+    options: {
+      fetchPolicy: "network-only",
+    },
+    skip: (ownProps) => !ownProps.isAuthed,
   }),
   withRouter)(Header)

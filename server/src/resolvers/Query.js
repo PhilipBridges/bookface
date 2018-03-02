@@ -11,10 +11,16 @@ const Query = {
 
   me(parent, args, ctx, info) {
     const id = getUserId(ctx)
-    return ctx.db.query.user({ where: { id } }, info)
+    if (id) {
+      return ctx.db.query.user({ where: { id } }, info)
+    }
   },
   userQuery(parent, args, ctx, info) {
     return ctx.db.query.users(info)
+  },
+  boxQuery(parent, args, ctx, info) {
+    const userId = getUserId(ctx)
+    return ctx.db.query.users({ where: { sentMessages_some: { sender: userId } } }, info)
   },
   messageQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)

@@ -49,7 +49,7 @@ const Login = props => {
             className={errors.password && touched.password ? 'text-input error' : 'text-input'}
           />
         </Form.Field>
-        
+
 
         <Button type="submit" disabled={isSubmitting} onClick={handleSubmit}>Submit</Button>
       </Form>
@@ -87,7 +87,6 @@ export default compose(
       const response = await mutate({
         variables: { password: values.password, email: values.email, error: values.errors },
       });
-
       const {
         token,
       } = response.data.login;
