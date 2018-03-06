@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import moment from 'moment'
 
-import Loading from './Loading'
+import Loading from '../components/Loading'
 
 
 class DetailPage extends React.Component {

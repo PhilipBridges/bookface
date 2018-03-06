@@ -19,7 +19,7 @@ const Login = props => {
     handleSubmit,
   } = props;
   return (
-    <Container text>
+    <Container className="pt4" text>
       <Header as="h2">Login</Header>
       <Form>
         <Form.Field >
@@ -92,7 +92,7 @@ export default compose(
         variables: { password: values.password, email: values.email, error: values.errors, user: values.user },
       });
       const {
-        token, user
+        token
       } = response.data.login;
 
       if (token !== null) {

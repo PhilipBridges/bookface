@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import { graphql, compose, withApollo } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import { setContext } from 'apollo-link-context'
@@ -14,7 +14,6 @@ import { Menu } from 'semantic-ui-react'
 class Header extends React.Component {
   constructor(props) {
     super(props);
-    console.log("INITIAL", props)
     this.state = {
       activeItem: 'home',
       user: {}
@@ -40,7 +39,7 @@ class Header extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.location.key !== nextProps.location.key
       && this.props.userQuery && !this.props.userQuery.loading) {
-        this.props.userQuery.refetch()
+      this.props.userQuery.refetch()
     }
   }
 
@@ -48,7 +47,7 @@ class Header extends React.Component {
     const authed = localStorage.getItem("token")
     const { activeItem } = this.state
 
-    if (this.props.userQuery && !this.props.userQuery.loading && this.state.user && !this.state.user.name){
+    if (this.props.userQuery && !this.props.userQuery.loading && this.state.user && !this.state.user.name) {
       this.setState({ user: this.props.userQuery.me })
     }
 
@@ -60,7 +59,9 @@ class Header extends React.Component {
           <React.Fragment>
             <Menu.Item name='inbox' active={activeItem === 'inbox'} onClick={this.handleItemClick} />
             <Menu.Item name='friends' active={activeItem === 'friends'} onClick={this.handleItemClick} />
-            <Menu.Item id={this.state.user.id} name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick} />
+            <Menu.Item id={this.state.user.id} name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick}>
+              Profile ({this.state.user.name})
+            </Menu.Item>
             <Menu.Item name='logout' active={activeItem === 'logout'} onClick={this.logout} />
           </React.Fragment>
           :
@@ -85,12 +86,10 @@ const ME_QUERY = gql`
 `
 
 export default compose(
-  withApollo,
   graphql(ME_QUERY, {
     name: "userQuery",
     options: {
       fetchPolicy: "cache-and-network",
-      notifyOnNetworkStatusChange: true
     },
   }),
   withRouter)(Header)

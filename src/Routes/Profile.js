@@ -3,9 +3,9 @@ import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withRouter } from 'react-router-dom'
 
-import Post from './Post'
-
-import Loading from './Loading'
+import Post from '../components/Post'
+import Loading from '../components/Loading'
+import CreatePageWithMutation from './CreatePage'
 
 import { Card, Icon, Image, Comment } from 'semantic-ui-react'
 
@@ -41,6 +41,7 @@ class Profile extends React.Component {
           </Card.Content>
         </Card>
         <div className="w-50 ml5">
+          <CreatePageWithMutation wall={true}/>
           <Comment.Group>
             {posts && posts.map(post =>
               <Post
@@ -60,7 +61,6 @@ const PROFILE_QUERY = gql`
   query profileQuery($id: ID){
       profileQuery(id: $id){
         id
-        email
         name
         posts {
           id

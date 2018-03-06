@@ -7,13 +7,13 @@ import 'tachyons'
 import './index.css'
 
 import client from './apollo'
-import Components from './components'
+import Routes from './Routes'
 
 require('dotenv').config({path: './.env'})
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Components />
+    <Routes />
   </ApolloProvider>,
   document.getElementById('root'),
 )

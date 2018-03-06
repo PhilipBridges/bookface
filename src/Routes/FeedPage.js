@@ -3,7 +3,7 @@ import Post from '../components/Post'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
-import Loading from './Loading'
+import Loading from '../components/Loading'
 
 import 'tachyons'
 
@@ -46,7 +46,6 @@ const FEED_QUERY = gql`
       id
       text
       title
-      isPublished
     }
   }
 `

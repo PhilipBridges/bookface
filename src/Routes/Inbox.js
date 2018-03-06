@@ -3,8 +3,8 @@ import Message from '../components/Message'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
-import MessageForm from './MessageForm'
-import Loading from './Loading'
+import MessageForm from '../components/MessageForm'
+import Loading from '../components/Loading'
 
 import 'tachyons'
 
