@@ -52,7 +52,7 @@ class CreatePage extends React.Component {
     await this.props.createPostMutation({
       variables: { title, text },
     })
-    this.props.history.replace('/profile')
+    this.props.history.replace('/')
   }
 }
 

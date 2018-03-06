@@ -2,7 +2,8 @@ import React from 'react'
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom'
 
 import FeedPage from './FeedPage'
@@ -10,8 +11,8 @@ import CreatePage from './CreatePage'
 import DetailPage from './DetailPage'
 import Register from './Register'
 import Login from './Login'
+import Inbox from './Inbox'
 import Profile from './Profile'
-import MessageForm from './MessageForm'
 
 import PrivateRoute from './PrivateRoute'
 import Header from './Header'
@@ -34,15 +35,21 @@ const Authed = () => {
 export default () =>
   <Router>
     <div>
-      <Header isAuthed={Authed()}/>
+      {Authed() ? <Header isAuthed={Authed()} /> : null}
       <Switch>
         <Route path="/register" component={Register} />
-        <Route path="/login" component={Login} />
+        <Route exact path="/login" render={() => (
+          Authed() ? (
+            <Redirect to="/"/>
+          ) : (
+            <Login/>
+          )
+        )}/>
         <PrivateRoute exact path="/" component={FeedPage} />
         <PrivateRoute path="/create" component={CreatePage} />
+        <PrivateRoute path="/inbox" component={Inbox} />
         <PrivateRoute path="/post/:id" component={DetailPage} />
-        <PrivateRoute path="/profile" component={Profile} />
-        <PrivateRoute path="/profile/message" component={MessageForm} />
+        <PrivateRoute exact path="/profile/:id" component={Profile} />
       </Switch>
     </div>
   </Router>

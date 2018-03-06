@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom';
 import decode from 'jwt-decode'
 
 const Authed = () => {
-  const token = localStorage.getItem("token") || null
+  const token = localStorage.getItem("token")
   try {
     decode(token);
   } catch (err) {

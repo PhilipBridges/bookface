@@ -5,6 +5,7 @@ type Query {
   post(id: ID!): Post!
   me: User
   userQuery: [User!]
+  profileQuery(id: ID): User!
   boxQuery: [User!]
   messageQuery(first: Int, after: String, before: String, last: Int, orderBy: MessageOrderByInput): [Message!]!
 }

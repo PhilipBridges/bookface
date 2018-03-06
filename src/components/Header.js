@@ -14,12 +14,18 @@ import { Menu } from 'semantic-ui-react'
 class Header extends React.Component {
   constructor(props) {
     super(props);
+    console.log("INITIAL", props)
     this.state = {
       activeItem: 'home',
+      user: {}
     }
   }
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name }, this.props.history.push(`${name}`))
+  handleItemClick = (e, { name, id }) => this.setState({ activeItem: name },
+    id ?
+      this.props.history.push(`/profile/${id}`)
+      :
+      this.props.history.push(`/${name}`))
 
   logout = async (e) => {
     setContext(() => ({
@@ -27,14 +33,14 @@ class Header extends React.Component {
         "Authorization": localStorage.removeItem("token"),
       }
     }))
-    localStorage.removeItem("token")
-    this.props.client.resetStore()
-    this.props.history.replace("/")
+    await localStorage.removeItem("token")
+    window.location.reload();
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.location.key !== nextProps.location.key && this.props.userQuery) {
-      this.props.userQuery.refetch()
+    if (this.props.location.key !== nextProps.location.key
+      && this.props.userQuery && !this.props.userQuery.loading) {
+        this.props.userQuery.refetch()
     }
   }
 
@@ -42,15 +48,19 @@ class Header extends React.Component {
     const authed = localStorage.getItem("token")
     const { activeItem } = this.state
 
+    if (this.props.userQuery && !this.props.userQuery.loading && this.state.user && !this.state.user.name){
+      this.setState({ user: this.props.userQuery.me })
+    }
+
     return (
       <Menu inverted>
-        <Menu.Item name='/' active={activeItem === 'home'} onClick={this.handleItemClick}>Home</Menu.Item>
+        <Menu.Item name='' active={activeItem === 'home'} onClick={this.handleItemClick}>Home</Menu.Item>
         {authed
           ?
           <React.Fragment>
-            <Menu.Item name='messages' active={activeItem === 'messages'} onClick={this.handleItemClick} />
+            <Menu.Item name='inbox' active={activeItem === 'inbox'} onClick={this.handleItemClick} />
             <Menu.Item name='friends' active={activeItem === 'friends'} onClick={this.handleItemClick} />
-            <Menu.Item name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick}>Profile</Menu.Item>
+            <Menu.Item id={this.state.user.id} name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick} />
             <Menu.Item name='logout' active={activeItem === 'logout'} onClick={this.logout} />
           </React.Fragment>
           :
@@ -67,20 +77,20 @@ class Header extends React.Component {
 
 const ME_QUERY = gql`
   query userQuery {
-      me {
-        id
-        name
-      }
+    me {
+      id
+      name
+    }
   }
-  `
+`
 
 export default compose(
   withApollo,
   graphql(ME_QUERY, {
     name: "userQuery",
     options: {
-      fetchPolicy: "network-only",
+      fetchPolicy: "cache-and-network",
+      notifyOnNetworkStatusChange: true
     },
-    skip: (ownProps) => !ownProps.isAuthed,
   }),
   withRouter)(Header)

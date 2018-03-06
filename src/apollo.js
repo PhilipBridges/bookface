@@ -2,6 +2,8 @@ import { ApolloClient } from "apollo-client";
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { setContext } from "apollo-link-context";
+import { withClientState } from 'apollo-link-state';
+import { ApolloLink } from 'apollo-link';
 
 require('dotenv').config({path: './.env'})
 
@@ -48,7 +50,9 @@ const httpLinkWithMiddleware = afterwareLink.concat(
 //   httpLinkWithMiddleware
 // );
 
+const cache = new InMemoryCache()
+
 export default new ApolloClient({
   link: httpLinkWithMiddleware,
-  cache: new InMemoryCache()
+  cache
 });

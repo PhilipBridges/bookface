@@ -18,6 +18,9 @@ const Query = {
   userQuery(parent, args, ctx, info) {
     return ctx.db.query.users(info)
   },
+  profileQuery(parent, { id }, ctx, info) {
+    return ctx.db.query.user({ where: { id } }, info)
+  },
   boxQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)
     return ctx.db.query.users({ where: { sentMessages_some: { sender: userId } } }, info)

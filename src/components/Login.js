@@ -5,6 +5,8 @@ import gql from 'graphql-tag';
 import { withFormik } from 'formik';
 import Yup from 'yup';
 
+import client from '../apollo'
+
 import '../Style/Form.css';
 
 const Login = props => {
@@ -21,7 +23,6 @@ const Login = props => {
       <Header as="h2">Login</Header>
       <Form>
         <Form.Field >
-
           <Input
             id="email"
             type="text"
@@ -50,7 +51,6 @@ const Login = props => {
           />
         </Form.Field>
 
-
         <Button type="submit" disabled={isSubmitting} onClick={handleSubmit}>Submit</Button>
       </Form>
       {errors.password &&
@@ -65,6 +65,10 @@ const loginMutation = gql`
   mutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
+      user {
+        id
+        name
+      }
     }
   }
 `;
@@ -85,16 +89,17 @@ export default compose(
       { props: { email, password, errors, mutate, history }, setSubmitting, setFieldError },
     ) => {
       const response = await mutate({
-        variables: { password: values.password, email: values.email, error: values.errors },
+        variables: { password: values.password, email: values.email, error: values.errors, user: values.user },
       });
       const {
-        token,
+        token, user
       } = response.data.login;
 
       if (token !== null) {
         await localStorage.setItem('token', token);
         setSubmitting(false);
-        history.replace('/');
+        client.resetStore()
+        await window.location.reload()
       } else {
         setSubmitting(false)
         setFieldError("error", { email: "User not found." })

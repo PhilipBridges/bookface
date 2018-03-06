@@ -31,7 +31,7 @@ const auth = {
 
     return {
       token: jwt.sign({ userId: user.id }, process.env.TOKEN_SECRET),
-      user,
+      user
     }
   },
 }
