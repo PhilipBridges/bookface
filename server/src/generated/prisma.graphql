@@ -17,7 +17,6 @@ type Post implements Node {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  isPublished: Boolean!
   title: String!
   text: String!
   author(where: UserWhereInput): User!
@@ -183,8 +182,8 @@ input MessageUpdateManyWithoutSenderInput {
   connect: [MessageWhereUniqueInput!]
   disconnect: [MessageWhereUniqueInput!]
   delete: [MessageWhereUniqueInput!]
-  update: [MessageUpdateWithoutSenderInput!]
-  upsert: [MessageUpsertWithoutSenderInput!]
+  update: [MessageUpdateWithWhereUniqueWithoutSenderInput!]
+  upsert: [MessageUpsertWithWhereUniqueWithoutSenderInput!]
 }
 
 input MessageUpdateManyWithoutTargetInput {
@@ -192,8 +191,8 @@ input MessageUpdateManyWithoutTargetInput {
   connect: [MessageWhereUniqueInput!]
   disconnect: [MessageWhereUniqueInput!]
   delete: [MessageWhereUniqueInput!]
-  update: [MessageUpdateWithoutTargetInput!]
-  upsert: [MessageUpsertWithoutTargetInput!]
+  update: [MessageUpdateWithWhereUniqueWithoutTargetInput!]
+  upsert: [MessageUpsertWithWhereUniqueWithoutTargetInput!]
 }
 
 input MessageUpdateWithoutSenderDataInput {
@@ -201,28 +200,28 @@ input MessageUpdateWithoutSenderDataInput {
   target: UserUpdateOneWithoutReceivedMessagesInput
 }
 
-input MessageUpdateWithoutSenderInput {
-  where: MessageWhereUniqueInput!
-  data: MessageUpdateWithoutSenderDataInput!
-}
-
 input MessageUpdateWithoutTargetDataInput {
   text: String
   sender: UserUpdateOneWithoutSentMessagesInput
 }
 
-input MessageUpdateWithoutTargetInput {
+input MessageUpdateWithWhereUniqueWithoutSenderInput {
+  where: MessageWhereUniqueInput!
+  data: MessageUpdateWithoutSenderDataInput!
+}
+
+input MessageUpdateWithWhereUniqueWithoutTargetInput {
   where: MessageWhereUniqueInput!
   data: MessageUpdateWithoutTargetDataInput!
 }
 
-input MessageUpsertWithoutSenderInput {
+input MessageUpsertWithWhereUniqueWithoutSenderInput {
   where: MessageWhereUniqueInput!
   update: MessageUpdateWithoutSenderDataInput!
   create: MessageCreateWithoutSenderInput!
 }
 
-input MessageUpsertWithoutTargetInput {
+input MessageUpsertWithWhereUniqueWithoutTargetInput {
   where: MessageWhereUniqueInput!
   update: MessageUpdateWithoutTargetDataInput!
   create: MessageCreateWithoutTargetInput!
@@ -455,8 +454,7 @@ type PostConnection {
 }
 
 input PostCreateInput {
-  isPublished: Boolean
-  title: String!
+  title: String
   text: String!
   author: UserCreateOneWithoutPostsInput!
 }
@@ -467,8 +465,7 @@ input PostCreateManyWithoutAuthorInput {
 }
 
 input PostCreateWithoutAuthorInput {
-  isPublished: Boolean
-  title: String!
+  title: String
   text: String!
 }
 
@@ -493,8 +490,6 @@ enum PostOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  isPublished_ASC
-  isPublished_DESC
   title_ASC
   title_DESC
   text_ASC
@@ -505,7 +500,6 @@ type PostPreviousValues {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  isPublished: Boolean!
   title: String!
   text: String!
 }
@@ -546,7 +540,6 @@ input PostSubscriptionWhereInput {
 }
 
 input PostUpdateInput {
-  isPublished: Boolean
   title: String
   text: String
   author: UserUpdateOneWithoutPostsInput
@@ -557,22 +550,21 @@ input PostUpdateManyWithoutAuthorInput {
   connect: [PostWhereUniqueInput!]
   disconnect: [PostWhereUniqueInput!]
   delete: [PostWhereUniqueInput!]
-  update: [PostUpdateWithoutAuthorInput!]
-  upsert: [PostUpsertWithoutAuthorInput!]
+  update: [PostUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [PostUpsertWithWhereUniqueWithoutAuthorInput!]
 }
 
 input PostUpdateWithoutAuthorDataInput {
-  isPublished: Boolean
   title: String
   text: String
 }
 
-input PostUpdateWithoutAuthorInput {
+input PostUpdateWithWhereUniqueWithoutAuthorInput {
   where: PostWhereUniqueInput!
   data: PostUpdateWithoutAuthorDataInput!
 }
 
-input PostUpsertWithoutAuthorInput {
+input PostUpsertWithWhereUniqueWithoutAuthorInput {
   where: PostWhereUniqueInput!
   update: PostUpdateWithoutAuthorDataInput!
   create: PostCreateWithoutAuthorInput!
@@ -698,11 +690,6 @@ input PostWhereInput {
   All values greater than or equal the given value.
   """
   updatedAt_gte: DateTime
-  isPublished: Boolean
-  """
-  All values that are not equal to given value.
-  """
-  isPublished_not: Boolean
   title: String
   """
   All values that are not equal to given value.
@@ -987,27 +974,27 @@ input UserUpdateInput {
 input UserUpdateOneWithoutPostsInput {
   create: UserCreateWithoutPostsInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  delete: UserWhereUniqueInput
-  update: UserUpdateWithoutPostsInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutPostsDataInput
   upsert: UserUpsertWithoutPostsInput
 }
 
 input UserUpdateOneWithoutReceivedMessagesInput {
   create: UserCreateWithoutReceivedMessagesInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  delete: UserWhereUniqueInput
-  update: UserUpdateWithoutReceivedMessagesInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutReceivedMessagesDataInput
   upsert: UserUpsertWithoutReceivedMessagesInput
 }
 
 input UserUpdateOneWithoutSentMessagesInput {
   create: UserCreateWithoutSentMessagesInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  delete: UserWhereUniqueInput
-  update: UserUpdateWithoutSentMessagesInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutSentMessagesDataInput
   upsert: UserUpsertWithoutSentMessagesInput
 }
 
@@ -1019,22 +1006,12 @@ input UserUpdateWithoutPostsDataInput {
   receivedMessages: MessageUpdateManyWithoutTargetInput
 }
 
-input UserUpdateWithoutPostsInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateWithoutPostsDataInput!
-}
-
 input UserUpdateWithoutReceivedMessagesDataInput {
   email: String
   password: String
   name: String
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
-}
-
-input UserUpdateWithoutReceivedMessagesInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateWithoutReceivedMessagesDataInput!
 }
 
 input UserUpdateWithoutSentMessagesDataInput {
@@ -1045,25 +1022,17 @@ input UserUpdateWithoutSentMessagesDataInput {
   receivedMessages: MessageUpdateManyWithoutTargetInput
 }
 
-input UserUpdateWithoutSentMessagesInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateWithoutSentMessagesDataInput!
-}
-
 input UserUpsertWithoutPostsInput {
-  where: UserWhereUniqueInput!
   update: UserUpdateWithoutPostsDataInput!
   create: UserCreateWithoutPostsInput!
 }
 
 input UserUpsertWithoutReceivedMessagesInput {
-  where: UserWhereUniqueInput!
   update: UserUpdateWithoutReceivedMessagesDataInput!
   create: UserCreateWithoutReceivedMessagesInput!
 }
 
 input UserUpsertWithoutSentMessagesInput {
-  where: UserWhereUniqueInput!
   update: UserUpdateWithoutSentMessagesDataInput!
   create: UserCreateWithoutSentMessagesInput!
 }

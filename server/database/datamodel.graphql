@@ -2,8 +2,7 @@ type Post {
   id: ID! @unique
   createdAt: DateTime!
   updatedAt: DateTime!
-  isPublished: Boolean! @default(value: "false")
-  title: String!
+  title: String! @default(value: "none")
   text: String!
   author: User!
 }

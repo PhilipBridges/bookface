@@ -6,9 +6,9 @@ stage: dev
 
 # to disable authentication:
 # disableAuth: true
-secret: ${env:PRISMA_SECRET}
+secret: "secret123"
 
 # the file path pointing to your data model
 datamodel: datamodel.graphql
 
-cluster: phil-bridges-45e182/prisma-us1
+# cluster: phil-bridges-45e182/prisma-us1
