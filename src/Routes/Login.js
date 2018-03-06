@@ -5,8 +5,6 @@ import gql from 'graphql-tag';
 import { withFormik } from 'formik';
 import Yup from 'yup';
 
-import client from '../apollo'
-
 import '../Style/Form.css';
 
 const Login = props => {
@@ -98,8 +96,7 @@ export default compose(
       if (token !== null) {
         await localStorage.setItem('token', token);
         setSubmitting(false);
-        client.resetStore()
-        await window.location.reload()
+        window.location.reload()
       } else {
         setSubmitting(false)
         setFieldError("error", { email: "User not found." })

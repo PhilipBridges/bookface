@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
   const Authorization = ctx.request.get(`Authorization`)
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '')
-    const { userId } = jwt.verify(token, 'secret123')
+    const { userId } = jwt.verify(token, process.env.SECRET)
     return userId
   }
   throw new AuthError()
