@@ -1,14 +1,18 @@
 # the name for the service (will be part of the service's HTTP endpoint)
-service: bookface
+service: awgw
 
 # the cluster and stage the service is deployed to
-stage: dev
+stage: ${env:PRISMA_STAGE}
 
 # to disable authentication:
 # disableAuth: true
-secret: process.env.SECRET
+secret: ${env:PRISMA_SECRET}
 
 # the file path pointing to your data model
 datamodel: datamodel.graphql
+
+# seed your service with initial data based on seed.graphql
+seed:
+  import: seed.graphql
 
 cluster: phil-bridges-45e182/prisma-us1
