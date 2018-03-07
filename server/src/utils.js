@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '')
     const { userId } = jwt.verify(token, process.env.TOKEN_SECRET)
+    console.log('yoozer', userId)
     return userId
   }
   throw new AuthError()

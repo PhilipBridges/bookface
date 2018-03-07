@@ -13,7 +13,7 @@ type Query {
 type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload!
   login(email: String!, password: String!): AuthPayload!
-  createPost(title: String!, text: String!): Post!
+  createPost(title: String!, text: String!, target: ID): Post!
   deletePost(id: ID!): Post!
   createMessage(text: String!, target: String!): Message!
   deleteMessage(id: ID!): Message

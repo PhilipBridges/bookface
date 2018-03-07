@@ -5,6 +5,7 @@ type Post {
   title: String! @default(value: "none")
   text: String!
   author: User!
+  target: ID
 }
 
 type User {

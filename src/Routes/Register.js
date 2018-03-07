@@ -41,7 +41,7 @@ class Register extends React.Component {
       errorList.push(passwordError);
     }
     return (
-      <Container text>
+      <Container className="pt4" text>
         <Header as="h2">Register</Header>
         <Form onSubmit={this.onSubmit}>
           <Form.Field >

@@ -92,7 +92,7 @@ export default compose(
 
       if (valid !== null) {
         setSubmitting(false)
-        history.replace('/profile')
+        history.replace('/inbox')
       } else {
         setSubmitting(false)
         setFieldError("error", { target: "User not found." })

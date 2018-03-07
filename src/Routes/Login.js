@@ -5,6 +5,8 @@ import gql from 'graphql-tag';
 import { withFormik } from 'formik';
 import Yup from 'yup';
 
+import { Link } from 'react-router-dom'
+
 import '../Style/Form.css';
 
 const Login = props => {
@@ -48,13 +50,14 @@ const Login = props => {
             className={errors.password && touched.password ? 'text-input error' : 'text-input'}
           />
         </Form.Field>
-
         <Button type="submit" disabled={isSubmitting} onClick={handleSubmit}>Submit</Button>
       </Form>
       {errors.password &&
         touched.password && <div className="input-feedback">{errors.password}</div>}
       {props.errors.error && <div>{props.errors.error.email}</div>}
-
+      <div>
+        ...or <Link to="/register">Register!</Link>
+      </div>
     </Container>
   );
 };

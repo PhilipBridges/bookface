@@ -20,6 +20,7 @@ type Post implements Node {
   title: String!
   text: String!
   author(where: UserWhereInput): User!
+  target: ID
 }
 
 type User implements Node {
@@ -456,6 +457,7 @@ type PostConnection {
 input PostCreateInput {
   title: String
   text: String!
+  target: ID
   author: UserCreateOneWithoutPostsInput!
 }
 
@@ -467,6 +469,7 @@ input PostCreateManyWithoutAuthorInput {
 input PostCreateWithoutAuthorInput {
   title: String
   text: String!
+  target: ID
 }
 
 """
@@ -494,6 +497,8 @@ enum PostOrderByInput {
   title_DESC
   text_ASC
   text_DESC
+  target_ASC
+  target_DESC
 }
 
 type PostPreviousValues {
@@ -502,6 +507,7 @@ type PostPreviousValues {
   updatedAt: DateTime!
   title: String!
   text: String!
+  target: ID
 }
 
 type PostSubscriptionPayload {
@@ -542,6 +548,7 @@ input PostSubscriptionWhereInput {
 input PostUpdateInput {
   title: String
   text: String
+  target: ID
   author: UserUpdateOneWithoutPostsInput
 }
 
@@ -557,6 +564,7 @@ input PostUpdateManyWithoutAuthorInput {
 input PostUpdateWithoutAuthorDataInput {
   title: String
   text: String
+  target: ID
 }
 
 input PostUpdateWithWhereUniqueWithoutAuthorInput {
@@ -796,6 +804,59 @@ input PostWhereInput {
   All values not ending with the given string.
   """
   text_not_ends_with: String
+  target: ID
+  """
+  All values that are not equal to given value.
+  """
+  target_not: ID
+  """
+  All values that are contained in given list.
+  """
+  target_in: [ID!]
+  """
+  All values that are not contained in given list.
+  """
+  target_not_in: [ID!]
+  """
+  All values less than the given value.
+  """
+  target_lt: ID
+  """
+  All values less than or equal the given value.
+  """
+  target_lte: ID
+  """
+  All values greater than the given value.
+  """
+  target_gt: ID
+  """
+  All values greater than or equal the given value.
+  """
+  target_gte: ID
+  """
+  All values containing the given string.
+  """
+  target_contains: ID
+  """
+  All values not containing the given string.
+  """
+  target_not_contains: ID
+  """
+  All values starting with the given string.
+  """
+  target_starts_with: ID
+  """
+  All values not starting with the given string.
+  """
+  target_not_starts_with: ID
+  """
+  All values ending with the given string.
+  """
+  target_ends_with: ID
+  """
+  All values not ending with the given string.
+  """
+  target_not_ends_with: ID
   author: UserWhereInput
 }
 

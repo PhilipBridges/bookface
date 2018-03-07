@@ -11,6 +11,7 @@ class CreatePage extends React.Component {
 
   render() {
     const wallPost = this.props.wall
+    console.log(this.props)
 
     return (
       <div className="pa4 flex justify-center bg-white">
@@ -36,13 +37,10 @@ class CreatePage extends React.Component {
             className={`pa3 bg-black-10 bn ${this.state.text &&
               this.state.title &&
               'dim pointer'}`}
-            disabled={!this.state.text || !this.state.title}
+            disabled={!this.state.text}
             type="submit"
             value="Create"
           />{' '}
-          <a className="f6 pointer" onClick={this.props.history.goBack}>
-            or cancel
-          </a>
         </form>
       </div>
     )
@@ -51,19 +49,23 @@ class CreatePage extends React.Component {
   handlePost = async e => {
     e.preventDefault()
     const { title, text } = this.state
+    const { target } = this.props
     await this.props.createPostMutation({
-      variables: { title, text },
+      variables: { title, text, target },
     })
     this.props.history.replace('/')
   }
 }
 
 const CREATE_POST_MUTATION = gql`
-  mutation CreatePostMutation($title: String!, $text: String!) {
-    createPost(title: $title, text: $text) {
+  mutation CreatePostMutation($title: String!, $text: String!, $target: ID) {
+    createPost(title: $title, text: $text, target: $target) {
       id
       title
       text
+      target {
+        id
+      }
     }
   }
 `

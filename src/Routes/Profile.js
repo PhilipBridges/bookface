@@ -22,7 +22,9 @@ class Profile extends React.Component {
       )
     }
 
-    const { email, name, posts } = this.props.data.profileQuery
+    console.log(this.props)
+
+    const { name, posts, id } = this.props.data.profileQuery
 
     return (
       <div className="flex">
@@ -30,18 +32,17 @@ class Profile extends React.Component {
           <Image centered size="small" src='/avatar.png' />
           <Card.Content textAlign="center">
             <Card.Header>{name}</Card.Header>
-            <Card.Meta>email: {email}</Card.Meta>
             <Card.Description>Whatever dude</Card.Description>
           </Card.Content>
           <Card.Content extra>
             <a>
-              <Icon centered name='user' />
+              <Icon name='user' />
               10 Friends
             </a>
           </Card.Content>
         </Card>
         <div className="w-50 ml5">
-          <CreatePageWithMutation wall={true}/>
+          <CreatePageWithMutation target={id} wall={true} />
           <Comment.Group>
             {posts && posts.map(post =>
               <Post
