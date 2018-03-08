@@ -38,8 +38,8 @@ class Header extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location.key !== nextProps.location.key
-      && this.props.userQuery && !this.props.userQuery.loading) {
-      this.props.userQuery.refetch()
+      && this.props.meQuery && !this.props.meQuery.loading) {
+      this.props.meQuery.refetch()
     }
   }
 
@@ -47,8 +47,8 @@ class Header extends React.Component {
     const authed = localStorage.getItem("token")
     const { activeItem } = this.state
 
-    if (this.props.userQuery && !this.props.userQuery.loading && this.state.user && !this.state.user.name) {
-      this.setState({ user: this.props.userQuery.me })
+    if (this.props.meQuery && !this.props.meQuery.loading && this.state.user && !this.state.user.name) {
+      this.setState({ user: this.props.meQuery.me })
     }
 
     return (
@@ -77,7 +77,7 @@ class Header extends React.Component {
 
 
 const ME_QUERY = gql`
-  query userQuery {
+  query meQuery {
     me {
       id
       name
@@ -87,7 +87,7 @@ const ME_QUERY = gql`
 
 export default compose(
   graphql(ME_QUERY, {
-    name: "userQuery",
+    name: "meQuery",
     options: {
       fetchPolicy: "cache-and-network",
     },

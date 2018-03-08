@@ -11,7 +11,6 @@ class CreatePage extends React.Component {
 
   render() {
     const wallPost = this.props.wall
-    console.log(this.props)
 
     return (
       <div className="pa4 flex justify-center bg-white">
@@ -49,23 +48,22 @@ class CreatePage extends React.Component {
   handlePost = async e => {
     e.preventDefault()
     const { title, text } = this.state
-    const { target } = this.props
+    const wallId = this.props.wallId
+
     await this.props.createPostMutation({
-      variables: { title, text, target },
+      variables: { title, text, wallId },
     })
     this.props.history.replace('/')
   }
 }
 
 const CREATE_POST_MUTATION = gql`
-  mutation CreatePostMutation($title: String!, $text: String!, $target: ID) {
-    createPost(title: $title, text: $text, target: $target) {
+  mutation CreatePostMutation($title: String!, $text: String!, $wallId: ID) {
+    createPost(title: $title, text: $text, wallId: $wallId) {
       id
       title
       text
-      target {
-        id
-      }
+      wallId
     }
   }
 `

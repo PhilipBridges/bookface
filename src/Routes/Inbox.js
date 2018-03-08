@@ -61,14 +61,14 @@ class Inbox extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.location.key !== nextProps.location.key) {
       this.props.messageQuery.refetch()
-      this.props.userQuery.refetch()
+      this.props.meQuery.refetch()
     }
     this.setState({ disablePage: false })
   }
 
   render() {
 
-    if (this.props.messageQuery.loading || this.props.userQuery.loading) {
+    if (this.props.messageQuery.loading || this.props.meQuery.loading) {
       return (
         <div className="flex w-100 h-100 items-center justify-center pt7">
           <Loading />
@@ -77,7 +77,7 @@ class Inbox extends React.Component {
     }
 
     const messages = this.props.messageQuery.messageQuery
-    const user = this.props.userQuery.me
+    const user = this.props.meQuery.me
 
     return (
       <React.Fragment>
@@ -127,7 +127,7 @@ query messageQuery($first: Int, $after: String, $last: Int, $before: String){
 }`
 
 const ME_QUERY = gql`
-  query userQuery {
+  query meQuery {
     me {
       id
       name
@@ -155,7 +155,7 @@ export default compose(
     },
   }),
   graphql(ME_QUERY, {
-    name: 'userQuery',
+    name: 'meQuery',
     options: {
       fetchPolicy: "cache-and-network",
     },

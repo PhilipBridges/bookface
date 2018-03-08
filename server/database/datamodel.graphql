@@ -2,10 +2,10 @@ type Post {
   id: ID! @unique
   createdAt: DateTime!
   updatedAt: DateTime!
-  title: String! @default(value: "none")
+  title: String!
   text: String!
-  author: User!
-  target: ID
+  author: User
+  wallId: ID
 }
 
 type User {

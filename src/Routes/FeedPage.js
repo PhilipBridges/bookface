@@ -46,6 +46,10 @@ const FEED_QUERY = gql`
       id
       text
       title
+      author {
+        id
+        name
+      }
     }
   }
 `

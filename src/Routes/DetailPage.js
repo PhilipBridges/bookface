@@ -35,11 +35,12 @@ class DetailPage extends React.Component {
     )
   }
 
-  _renderAction = ({ id }) => {
+  _renderAction = ( post ) => {
+    console.log(post)
     return (
       <a
         className="f6 dim br1 ba ph3 pv2 mb2 dib black pointer"
-        onClick={() => this.deletePost(id)}
+        onClick={() => this.deletePost(post.id)}
       >
         Delete
       </a>
@@ -65,6 +66,7 @@ const POST_QUERY = gql`
       author {
         name
       }
+      wallId
     }
   }
 `

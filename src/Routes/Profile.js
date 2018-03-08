@@ -22,8 +22,6 @@ class Profile extends React.Component {
       )
     }
 
-    console.log(this.props)
-
     const { name, posts, id } = this.props.data.profileQuery
 
     return (
@@ -42,7 +40,7 @@ class Profile extends React.Component {
           </Card.Content>
         </Card>
         <div className="w-50 ml5">
-          <CreatePageWithMutation target={id} wall={true} />
+          <CreatePageWithMutation wallId={id} wall={true} />
           <Comment.Group>
             {posts && posts.map(post =>
               <Post
