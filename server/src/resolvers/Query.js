@@ -2,7 +2,7 @@ const { getUserId } = require('../utils')
 
 const Query = {
   feed(parent, args, ctx, info) {
-    return ctx.db.query.posts({ where: { author: { id_not: null } } }, info);
+    return ctx.db.query.posts({ where: { wallId: args.wallId } }, info);
   },
 
   post(parent, { id }, ctx, info) {

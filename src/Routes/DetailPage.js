@@ -23,7 +23,7 @@ class DetailPage extends React.Component {
 
     return (
       <React.Fragment>
-        <h1>{post.author.name} </h1>
+        <h1>{this.props.postQuery.post.author.name} </h1>
         <h2 className="f3 black-80 fw4 lh-solid">{post.title}</h2>
         <span>{moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
         <p className="black-80 fw3">{post.text}</p>
@@ -35,8 +35,7 @@ class DetailPage extends React.Component {
     )
   }
 
-  _renderAction = ( post ) => {
-    console.log(post)
+  _renderAction = (post) => {
     return (
       <a
         className="f6 dim br1 ba ph3 pv2 mb2 dib black pointer"
@@ -63,10 +62,11 @@ const POST_QUERY = gql`
       id
       title
       text
+      wallId
       author {
+        id
         name
       }
-      wallId
     }
   }
 `

@@ -1,7 +1,7 @@
 # import Post, Message from "./generated/prisma.graphql"
 
 type Query {
-  feed: [Post!]!
+  feed(wallId: ID): [Post!]!
   post(id: ID!, wallId: ID): Post!
   me: User
   userQuery: [User!]

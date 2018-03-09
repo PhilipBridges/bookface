@@ -22,7 +22,8 @@ class Profile extends React.Component {
       )
     }
 
-    const { name, posts, id } = this.props.data.profileQuery
+    const { name, id } = this.props.data.profileQuery
+    const posts = this.props.feedQuery.feed
 
     return (
       <div className="flex">
@@ -46,6 +47,7 @@ class Profile extends React.Component {
               <Post
                 key={post.id}
                 post={post}
+                author={post.author}
                 refresh={() => this.props.feedQuery.refetch()}
               />
             )}
@@ -61,21 +63,36 @@ const PROFILE_QUERY = gql`
       profileQuery(id: $id){
         id
         name
-        posts {
-          id
-          createdAt
-          author {
-            id
-            name
-          }
-          title
-          text
-        }
       }
   }
   `
 
+const FEED_QUERY = gql`
+  query FeedQuery($wallId: ID){
+    feed(wallId: $wallId){
+      id
+      text
+      title
+      createdAt
+      wallId
+      author {
+        id
+        name
+      }
+    }
+  }
+`
+
 export default compose(
+  graphql(FEED_QUERY, {
+    name: "feedQuery",
+    options: (props) => ({
+      fetchPolicy: "cache-and-network",
+      variables: {
+        wallId: props.match.params.id
+      },
+    })
+  }),
   graphql(PROFILE_QUERY, {
     name: "data",
     options: (props) => ({
