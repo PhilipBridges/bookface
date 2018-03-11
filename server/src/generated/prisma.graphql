@@ -29,6 +29,7 @@ type User implements Node {
   password: String!
   name: String!
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+  friends: [ID!]
   sentMessages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
   receivedMessages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
 }
@@ -904,10 +905,15 @@ type UserConnection {
   aggregate: AggregateUser!
 }
 
+input UserCreatefriendsInput {
+  set: [ID!]
+}
+
 input UserCreateInput {
   email: String!
   password: String!
   name: String!
+  friends: UserCreatefriendsInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
   receivedMessages: MessageCreateManyWithoutTargetInput
@@ -932,6 +938,7 @@ input UserCreateWithoutPostsInput {
   email: String!
   password: String!
   name: String!
+  friends: UserCreatefriendsInput
   sentMessages: MessageCreateManyWithoutSenderInput
   receivedMessages: MessageCreateManyWithoutTargetInput
 }
@@ -940,6 +947,7 @@ input UserCreateWithoutReceivedMessagesInput {
   email: String!
   password: String!
   name: String!
+  friends: UserCreatefriendsInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
 }
@@ -948,6 +956,7 @@ input UserCreateWithoutSentMessagesInput {
   email: String!
   password: String!
   name: String!
+  friends: UserCreatefriendsInput
   posts: PostCreateManyWithoutAuthorInput
   receivedMessages: MessageCreateManyWithoutTargetInput
 }
@@ -986,6 +995,7 @@ type UserPreviousValues {
   email: String!
   password: String!
   name: String!
+  friends: [ID!]
 }
 
 type UserSubscriptionPayload {
@@ -1023,10 +1033,15 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdatefriendsInput {
+  set: [ID!]
+}
+
 input UserUpdateInput {
   email: String
   password: String
   name: String
+  friends: UserUpdatefriendsInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
@@ -1063,6 +1078,7 @@ input UserUpdateWithoutPostsDataInput {
   email: String
   password: String
   name: String
+  friends: UserUpdatefriendsInput
   sentMessages: MessageUpdateManyWithoutSenderInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
 }
@@ -1071,6 +1087,7 @@ input UserUpdateWithoutReceivedMessagesDataInput {
   email: String
   password: String
   name: String
+  friends: UserUpdatefriendsInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
 }
@@ -1079,6 +1096,7 @@ input UserUpdateWithoutSentMessagesDataInput {
   email: String
   password: String
   name: String
+  friends: UserUpdatefriendsInput
   posts: PostUpdateManyWithoutAuthorInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
 }

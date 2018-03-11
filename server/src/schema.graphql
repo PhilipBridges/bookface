@@ -1,7 +1,7 @@
 # import Post, Message from "./generated/prisma.graphql"
 
 type Query {
-  feed(wallId: ID): [Post!]!
+  feed(wallId: ID, orderBy: MessageOrderByInput): [Post!]!
   post(id: ID!, wallId: ID): Post!
   me: User
   userQuery: [User!]
@@ -17,6 +17,7 @@ type Mutation {
   deletePost(id: ID!): Post!
   createMessage(text: String!, target: String!): Message!
   deleteMessage(id: ID!): Message
+  addFriend(target: ID!): Friend
 }
 
 type AuthPayload {
@@ -29,5 +30,11 @@ type User {
   id: ID
   email: String
   name: String
+  friends: [Friend]
   posts: [Post!]
+}
+
+type Friend {
+  id: ID
+  name: String
 }
