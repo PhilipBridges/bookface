@@ -53,7 +53,7 @@ class Header extends React.Component {
 
     return (
       <Menu inverted>
-        <Menu.Item name='' active={activeItem === 'home'} onClick={this.handleItemClick}>Home</Menu.Item>
+        <Menu.Item name='' active={activeItem === 'home'} onClick={this.handleItemClick}>Feed</Menu.Item>
         {authed
           ?
           <React.Fragment>

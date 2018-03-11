@@ -25,7 +25,6 @@ class FeedPage extends React.Component {
 
     return (
       <React.Fragment>
-        <h1>Feed</h1>
         {this.props.feedQuery.feed &&
           this.props.feedQuery.feed.map(post => (
             <Post
@@ -42,10 +41,11 @@ class FeedPage extends React.Component {
 
 const FEED_QUERY = gql`
   query FeedQuery {
-    feed {
+    feed(orderBy: createdAt_DESC){
       id
       text
       title
+      createdAt
       author {
         id
         name
