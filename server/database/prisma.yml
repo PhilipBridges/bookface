@@ -5,8 +5,8 @@ service: prismaproject
 stage: ${env:PRISMA_STAGE}
 
 # to disable authentication:
-# disableAuth: true
-secret: ${env:PRISMA_SECRET}
+disableAuth: true
+# secret: ${env:PRISMA_SECRET}
 
 # the file path pointing to your data model
 datamodel: datamodel.graphql
