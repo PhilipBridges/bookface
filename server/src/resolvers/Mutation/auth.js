@@ -19,7 +19,7 @@ const auth = {
     if (!user) {
       return {
         token: null,
-        user: { id: ""} ,
+        user: { id: "" },
         error: "Invalid!"
       }
     }
