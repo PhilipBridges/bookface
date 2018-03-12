@@ -16,6 +16,7 @@ type User {
   posts: [Post!]!
   sentMessages: [Message!]! @relation(name: "Messenger")
   receivedMessages: [Message!]! @relation(name: "Receiver")
+  friendList: [String!]!
 }
 
 type Message {

@@ -29,9 +29,9 @@ type User implements Node {
   password: String!
   name: String!
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
-  friends: String
   sentMessages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
   receivedMessages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+  friendList: [String!]
 }
 
 
@@ -905,11 +905,15 @@ type UserConnection {
   aggregate: AggregateUser!
 }
 
+input UserCreatefriendListInput {
+  set: [String!]
+}
+
 input UserCreateInput {
   email: String!
   password: String!
   name: String!
-  friends: String
+  friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
   receivedMessages: MessageCreateManyWithoutTargetInput
@@ -934,7 +938,7 @@ input UserCreateWithoutPostsInput {
   email: String!
   password: String!
   name: String!
-  friends: String
+  friendList: UserCreatefriendListInput
   sentMessages: MessageCreateManyWithoutSenderInput
   receivedMessages: MessageCreateManyWithoutTargetInput
 }
@@ -943,7 +947,7 @@ input UserCreateWithoutReceivedMessagesInput {
   email: String!
   password: String!
   name: String!
-  friends: String
+  friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
 }
@@ -952,7 +956,7 @@ input UserCreateWithoutSentMessagesInput {
   email: String!
   password: String!
   name: String!
-  friends: String
+  friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   receivedMessages: MessageCreateManyWithoutTargetInput
 }
@@ -980,8 +984,6 @@ enum UserOrderByInput {
   password_DESC
   name_ASC
   name_DESC
-  friends_ASC
-  friends_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -993,7 +995,7 @@ type UserPreviousValues {
   email: String!
   password: String!
   name: String!
-  friends: String
+  friendList: [String!]
 }
 
 type UserSubscriptionPayload {
@@ -1031,11 +1033,15 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdatefriendListInput {
+  set: [String!]
+}
+
 input UserUpdateInput {
   email: String
   password: String
   name: String
-  friends: String
+  friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
@@ -1072,7 +1078,7 @@ input UserUpdateWithoutPostsDataInput {
   email: String
   password: String
   name: String
-  friends: String
+  friendList: UserUpdatefriendListInput
   sentMessages: MessageUpdateManyWithoutSenderInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
 }
@@ -1081,7 +1087,7 @@ input UserUpdateWithoutReceivedMessagesDataInput {
   email: String
   password: String
   name: String
-  friends: String
+  friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
 }
@@ -1090,7 +1096,7 @@ input UserUpdateWithoutSentMessagesDataInput {
   email: String
   password: String
   name: String
-  friends: String
+  friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
 }
@@ -1331,59 +1337,6 @@ input UserWhereInput {
   All values not ending with the given string.
   """
   name_not_ends_with: String
-  friends: String
-  """
-  All values that are not equal to given value.
-  """
-  friends_not: String
-  """
-  All values that are contained in given list.
-  """
-  friends_in: [String!]
-  """
-  All values that are not contained in given list.
-  """
-  friends_not_in: [String!]
-  """
-  All values less than the given value.
-  """
-  friends_lt: String
-  """
-  All values less than or equal the given value.
-  """
-  friends_lte: String
-  """
-  All values greater than the given value.
-  """
-  friends_gt: String
-  """
-  All values greater than or equal the given value.
-  """
-  friends_gte: String
-  """
-  All values containing the given string.
-  """
-  friends_contains: String
-  """
-  All values not containing the given string.
-  """
-  friends_not_contains: String
-  """
-  All values starting with the given string.
-  """
-  friends_starts_with: String
-  """
-  All values not starting with the given string.
-  """
-  friends_not_starts_with: String
-  """
-  All values ending with the given string.
-  """
-  friends_ends_with: String
-  """
-  All values not ending with the given string.
-  """
-  friends_not_ends_with: String
   posts_every: PostWhereInput
   posts_some: PostWhereInput
   posts_none: PostWhereInput
