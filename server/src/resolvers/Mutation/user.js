@@ -8,10 +8,21 @@ const user = {
       return { data: null }
     }
 
+    const getUser = await ctx.db.query.user({ where: { id: "cjeojjg69wxuw0197hzxdnnt2" } }, 
+      `{
+        id
+        friendList
+      }`
+    )
+
+    const friendList = getUser.friendList
+
     return ctx.db.mutation.updateUser({
-      where: { id: userId },
+      where: { id: "cjeojjg69wxuw0197hzxdnnt2" },
       data: {
-        name: "memer"
+        friendList: {
+          set: [...friendList, target]
+        }
       }
     })
   }

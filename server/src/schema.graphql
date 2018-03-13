@@ -17,7 +17,7 @@ type Mutation {
   deletePost(id: ID!): Post!
   createMessage(text: String!, target: String!): Message!
   deleteMessage(id: ID!): Message
-  
+  addFriend(target: ID!): User
 }
 
 type AuthPayload {

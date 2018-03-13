@@ -12,6 +12,15 @@ import { Card, Icon, Image, Comment } from 'semantic-ui-react'
 import 'tachyons'
 
 class Profile extends React.Component {
+  async addFriend(props) {
+    console.log(props)
+   await this.props.friendMutation({
+      variables: {
+        target: props.id
+      }
+    })
+  }
+
   render() {
 
     if (this.props.data.loading) {
@@ -37,6 +46,7 @@ class Profile extends React.Component {
             <a>
               <Icon name='user' />
               10 Friends
+              <button onClick={(id) => this.addFriend}>Add as friend</button>
             </a>
           </Card.Content>
         </Card>
@@ -63,6 +73,7 @@ const PROFILE_QUERY = gql`
       profileQuery(id: $id){
         id
         name
+        friendList
       }
   }
   `
@@ -83,7 +94,19 @@ const FEED_QUERY = gql`
   }
 `
 
+const FRIEND_MUTATION = gql`
+  mutation friendMutation($target: ID!){
+  addFriend(target: $target){
+    id
+    name
+  }
+  }
+`
+
 export default compose(
+  graphql(FRIEND_MUTATION, {
+    name: "friendMutation",
+  }),
   graphql(FEED_QUERY, {
     name: "feedQuery",
     options: (props) => ({
