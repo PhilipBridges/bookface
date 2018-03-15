@@ -6,6 +6,7 @@ import { withFormik } from 'formik';
 import Yup from 'yup';
 
 import '../Style/Form.css';
+
 const MessageForm = props => {
   const {
     values,

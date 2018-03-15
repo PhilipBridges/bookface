@@ -12,18 +12,24 @@ import { Card, Icon, Image, Comment } from 'semantic-ui-react'
 import 'tachyons'
 
 class Profile extends React.Component {
-  async addFriend(props) {
-    console.log(props)
-   await this.props.friendMutation({
+  async addFriend(id) {
+    await this.props.friendMutation({
       variables: {
-        target: props.id
+        target: id
+      }
+    })
+  }
+  async removeFriend(id) {
+    await this.props.unfriendMutation({
+      variables: {
+        target: id
       }
     })
   }
 
   render() {
 
-    if (this.props.data.loading) {
+    if (this.props.data.loading || this.props.meQuery.loading) {
       return (
         <div className="flex w-100 h-100 items-center justify-center pt7">
           <Loading />
@@ -33,9 +39,13 @@ class Profile extends React.Component {
 
     const { name, id } = this.props.data.profileQuery
     const posts = this.props.feedQuery.feed
+    const friendId = this.props.meQuery.me.id
+
+    const friendCheck = id === friendId
 
     return (
       <div className="flex">
+        {console.log(this.props)}
         <Card className="fl w-50">
           <Image centered size="small" src='/avatar.png' />
           <Card.Content textAlign="center">
@@ -46,7 +56,10 @@ class Profile extends React.Component {
             <a>
               <Icon name='user' />
               10 Friends
-              <button onClick={(id) => this.addFriend}>Add as friend</button>
+              {!friendCheck ? <button onClick={() => this.addFriend(id)}>Add as friend</button>
+                :
+                <button onClick={() => this.removeFriend(id)}>Unfriend</button>
+              }
             </a>
           </Card.Content>
         </Card>
@@ -96,16 +109,39 @@ const FEED_QUERY = gql`
 
 const FRIEND_MUTATION = gql`
   mutation friendMutation($target: ID!){
-  addFriend(target: $target){
+    addFriend(target: $target) {
     id
     name
   }
+}
+`
+const UNFRIEND_MUTATION = gql`
+  mutation unfriendMutation($target: ID!){
+    deleteFriend(target: $target) {
+    id
+    name
+  }
+}
+`
+
+const ME_QUERY = gql`
+  query meQuery {
+    me {
+      id
+      friendList
+    }
   }
 `
 
 export default compose(
+  graphql(ME_QUERY, {
+    name: "meQuery"
+  }),
   graphql(FRIEND_MUTATION, {
     name: "friendMutation",
+  }),
+  graphql(UNFRIEND_MUTATION, {
+    name: "unfriendMutation",
   }),
   graphql(FEED_QUERY, {
     name: "feedQuery",

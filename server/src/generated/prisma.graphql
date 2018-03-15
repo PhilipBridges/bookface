@@ -1059,7 +1059,6 @@ input UserUpdateOneWithoutPostsInput {
 input UserUpdateOneWithoutReceivedMessagesInput {
   create: UserCreateWithoutReceivedMessagesInput
   connect: UserWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
   update: UserUpdateWithoutReceivedMessagesDataInput
   upsert: UserUpsertWithoutReceivedMessagesInput
@@ -1068,7 +1067,6 @@ input UserUpdateOneWithoutReceivedMessagesInput {
 input UserUpdateOneWithoutSentMessagesInput {
   create: UserCreateWithoutSentMessagesInput
   connect: UserWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
   update: UserUpdateWithoutSentMessagesDataInput
   upsert: UserUpsertWithoutSentMessagesInput
