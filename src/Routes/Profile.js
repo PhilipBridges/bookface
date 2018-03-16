@@ -12,10 +12,11 @@ import { Card, Icon, Image, Comment } from 'semantic-ui-react'
 import 'tachyons'
 
 class Profile extends React.Component {
-  async addFriend(id) {
+  async addFriend(id, name) {
     await this.props.friendMutation({
       variables: {
-        target: id
+        id: id,
+        name: name
       }
     })
   }
@@ -39,28 +40,30 @@ class Profile extends React.Component {
 
     const { name, id } = this.props.data.profileQuery
     const posts = this.props.feedQuery.feed
-    const friendId = this.props.meQuery.me.id
+    const friendList = this.props.meQuery.me.friendList
 
-    const friendCheck = id === friendId
+    var friendCheck = friendList.find(x => x === id)
 
     return (
       <div className="flex">
-        {console.log(this.props)}
         <Card className="fl w-50">
           <Image centered size="small" src='/avatar.png' />
           <Card.Content textAlign="center">
             <Card.Header>{name}</Card.Header>
             <Card.Description>Whatever dude</Card.Description>
+            {friendCheck !== undefined
+              ?
+              <button onClick={() => this.addFriend(name, id)}>Add as friend</button>
+              :
+              <button onClick={() => this.removeFriend(id)}>Unfriend</button>
+            }
           </Card.Content>
           <Card.Content extra>
             <a>
               <Icon name='user' />
-              10 Friends
-              {!friendCheck ? <button onClick={() => this.addFriend(id)}>Add as friend</button>
-                :
-                <button onClick={() => this.removeFriend(id)}>Unfriend</button>
-              }
+              {friendList.map(friend => <div>{friend}</div>)}
             </a>
+
           </Card.Content>
         </Card>
         <div className="w-50 ml5">
