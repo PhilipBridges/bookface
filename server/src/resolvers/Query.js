@@ -31,6 +31,23 @@ const Query = {
 
     return ctx.db.query.messages({ where: { target: { id: userId } }, first, last, before, after }, info)
   },
+  async friendQuery(parent, { target }, ctx, info) {
+    console.log("asd", target)
+    const userId = getUserId(ctx)
+    const getUser = await ctx.db.query.user({ where: { id: target } },
+      `{
+        id
+        friendList
+      }`
+    )
+    const friendList = getUser.friendList
+    const newList = friendList.map(async (friend) => {
+      const currUser = await ctx.db.query.user({ where: { id: friend } })
+      return { id: currUser.id, name: currUser.name }
+    })
+    return newList
+  }
+
 }
 
 module.exports = { Query }

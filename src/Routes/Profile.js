@@ -12,11 +12,10 @@ import { Card, Icon, Image, Comment } from 'semantic-ui-react'
 import 'tachyons'
 
 class Profile extends React.Component {
-  async addFriend(id, name) {
+  async addFriend(id) {
     await this.props.friendMutation({
       variables: {
-        id: id,
-        name: name
+        target: id
       }
     })
   }
@@ -30,7 +29,7 @@ class Profile extends React.Component {
 
   render() {
 
-    if (this.props.data.loading || this.props.meQuery.loading) {
+    if (this.props.data.loading || this.props.meQuery.loading || this.props.friendQuery.loading) {
       return (
         <div className="flex w-100 h-100 items-center justify-center pt7">
           <Loading />
@@ -40,9 +39,9 @@ class Profile extends React.Component {
 
     const { name, id } = this.props.data.profileQuery
     const posts = this.props.feedQuery.feed
-    const friendList = this.props.meQuery.me.friendList
+    const friendList = this.props.friendQuery.friendQuery
 
-    var friendCheck = friendList.find(x => x === id)
+    var friendCheck = friendList.find(x => x.id === id)
 
     return (
       <div className="flex">
@@ -51,9 +50,9 @@ class Profile extends React.Component {
           <Card.Content textAlign="center">
             <Card.Header>{name}</Card.Header>
             <Card.Description>Whatever dude</Card.Description>
-            {friendCheck !== undefined
+            {friendCheck === undefined
               ?
-              <button onClick={() => this.addFriend(name, id)}>Add as friend</button>
+              <button onClick={() => this.addFriend(id)}>Add as friend</button>
               :
               <button onClick={() => this.removeFriend(id)}>Unfriend</button>
             }
@@ -61,7 +60,7 @@ class Profile extends React.Component {
           <Card.Content extra>
             <a>
               <Icon name='user' />
-              {friendList.map(friend => <div>{friend}</div>)}
+              {friendList.map(friend => <div key={friend.id}>{friend.name}</div>)}
             </a>
 
           </Card.Content>
@@ -89,10 +88,18 @@ const PROFILE_QUERY = gql`
       profileQuery(id: $id){
         id
         name
-        friendList
       }
   }
-  `
+`
+
+const FRIEND_QUERY = gql`
+  query friendQuery($target: ID!){
+  friendQuery(target: $target){
+    name
+    id
+    }
+  }
+`
 
 const FEED_QUERY = gql`
   query FeedQuery($wallId: ID){
@@ -114,7 +121,6 @@ const FRIEND_MUTATION = gql`
   mutation friendMutation($target: ID!){
     addFriend(target: $target) {
     id
-    name
   }
 }
 `
@@ -122,7 +128,6 @@ const UNFRIEND_MUTATION = gql`
   mutation unfriendMutation($target: ID!){
     deleteFriend(target: $target) {
     id
-    name
   }
 }
 `
@@ -139,12 +144,6 @@ const ME_QUERY = gql`
 export default compose(
   graphql(ME_QUERY, {
     name: "meQuery"
-  }),
-  graphql(FRIEND_MUTATION, {
-    name: "friendMutation",
-  }),
-  graphql(UNFRIEND_MUTATION, {
-    name: "unfriendMutation",
   }),
   graphql(FEED_QUERY, {
     name: "feedQuery",
@@ -163,5 +162,20 @@ export default compose(
         id: props.match.params.id
       },
     }),
+  }),
+  graphql(FRIEND_QUERY, {
+    name: "friendQuery",
+    options: (props) => ({
+      fetchPolicy: "cache-and-network",
+      variables: {
+        target: props.match.params.id
+      },
+    }),
+  }),
+  graphql(FRIEND_MUTATION, {
+    name: "friendMutation",
+  }),
+  graphql(UNFRIEND_MUTATION, {
+    name: "unfriendMutation",
   }),
   withRouter)(Profile)
