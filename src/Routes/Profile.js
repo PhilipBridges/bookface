@@ -29,7 +29,7 @@ class Profile extends React.Component {
 
   render() {
 
-    if (this.props.data.loading || this.props.meQuery.loading || this.props.friendQuery.loading) {
+    if (this.props.meQuery.loading || this.props.friendQuery.loading) {
       return (
         <div className="flex w-100 h-100 items-center justify-center pt7">
           <Loading />
@@ -37,11 +37,11 @@ class Profile extends React.Component {
       )
     }
 
-    const { name, id } = this.props.data.profileQuery
+    const { name, id } = this.props.friendQuery.friendQuery
     const posts = this.props.feedQuery.feed
-    const friendList = this.props.friendQuery.friendQuery
+    const friendList = this.props.friendQuery.friendQuery.friendList
 
-    var friendCheck = friendList.find(x => x.id === id)
+    var friendCheck = friendList.find(x => x.id === this.props.match.params.id)
 
     return (
       <div className="flex">
@@ -83,20 +83,15 @@ class Profile extends React.Component {
   }
 }
 
-const PROFILE_QUERY = gql`
-  query profileQuery($id: ID){
-      profileQuery(id: $id){
-        id
-        name
-      }
-  }
-`
-
 const FRIEND_QUERY = gql`
   query friendQuery($target: ID!){
   friendQuery(target: $target){
-    name
-    id
+    proId
+    proName
+    friendList {
+      id
+      name
+    }
     }
   }
 `
@@ -153,15 +148,6 @@ export default compose(
         wallId: props.match.params.id
       },
     })
-  }),
-  graphql(PROFILE_QUERY, {
-    name: "data",
-    options: (props) => ({
-      fetchPolicy: "cache-and-network",
-      variables: {
-        id: props.match.params.id
-      },
-    }),
   }),
   graphql(FRIEND_QUERY, {
     name: "friendQuery",

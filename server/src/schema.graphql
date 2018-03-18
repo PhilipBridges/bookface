@@ -5,10 +5,9 @@ type Query {
   post(id: ID!, wallId: ID): Post!
   me: User
   userQuery: [User!]
-  profileQuery(id: ID): User!
   boxQuery: [User!]
   messageQuery(first: Int, after: String, before: String, last: Int, orderBy: MessageOrderByInput): [Message!]!
-  friendQuery(target: ID!): [User!]!
+  friendQuery(target: ID!): Profile
 }
 
 type Mutation {
@@ -34,4 +33,10 @@ type User {
   name: String
   posts: [Post!]
   friendList: [String!]
+}
+
+type Profile {
+  proId: ID!
+  proName: String!
+  friendList: [User!]!
 }

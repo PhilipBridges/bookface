@@ -18,9 +18,6 @@ const Query = {
   userQuery(parent, args, ctx, info) {
     return ctx.db.query.users(info)
   },
-  profileQuery(parent, { id }, ctx, info) {
-    return ctx.db.query.user({ where: { id } }, info)
-  },
   boxQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)
     return ctx.db.query.users({ where: { sentMessages_some: { sender: userId } } }, info)
@@ -32,11 +29,10 @@ const Query = {
     return ctx.db.query.messages({ where: { target: { id: userId } }, first, last, before, after }, info)
   },
   async friendQuery(parent, { target }, ctx, info) {
-    console.log("asd", target)
-    const userId = getUserId(ctx)
     const getUser = await ctx.db.query.user({ where: { id: target } },
       `{
         id
+        name
         friendList
       }`
     )
@@ -45,7 +41,7 @@ const Query = {
       const currUser = await ctx.db.query.user({ where: { id: friend } })
       return { id: currUser.id, name: currUser.name }
     })
-    return newList
+    return { friendList: newList, proId: getUser.id, proName: getUser.name }
   }
 
 }
