@@ -40,9 +40,27 @@ const user = {
       }`
     )
 
+    const getTarget = await ctx.db.query.user({ where: { id: target } },
+      `{
+        id
+        friendList
+      }`
+    )
+
     const friendList = getUser.friendList
+    const targetList = getTarget.friendList
 
     const newList = friendList.filter(i => i !== target)
+    const newTargetList = targetList.filter(i => i !== userId)
+
+    ctx.db.mutation.updateUser({
+      where: { id: target },
+      data: {
+        friendList: {
+          set: newTargetList
+        }
+      }
+    })
 
     return ctx.db.mutation.updateUser({
       where: { id: userId },

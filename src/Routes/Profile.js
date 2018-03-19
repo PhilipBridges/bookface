@@ -1,7 +1,7 @@
 import React from 'react'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
 import Post from '../components/Post'
 import Loading from '../components/Loading'
@@ -12,14 +12,19 @@ import { Card, Icon, Image, Comment } from 'semantic-ui-react'
 import 'tachyons'
 
 class Profile extends React.Component {
-  async addFriend(id) {
+  state = {
+    friendClick: false
+  }
+  async addFriend(proId) {
+    this.setState({ friendClick: true })
     await this.props.friendMutation({
       variables: {
-        target: id
+        target: proId
       }
     })
   }
   async removeFriend(id) {
+    this.setState({ friendClick: true })
     await this.props.unfriendMutation({
       variables: {
         target: id
@@ -37,7 +42,7 @@ class Profile extends React.Component {
       )
     }
 
-    const { name, id } = this.props.friendQuery.friendQuery
+    const { proName, proId } = this.props.friendQuery.friendQuery
     const posts = this.props.feedQuery.feed
     const friendList = this.props.friendQuery.friendQuery.friendList
 
@@ -48,25 +53,25 @@ class Profile extends React.Component {
         <Card className="fl w-50">
           <Image centered size="small" src='/avatar.png' />
           <Card.Content textAlign="center">
-            <Card.Header>{name}</Card.Header>
+            <Card.Header>{proName}</Card.Header>
             <Card.Description>Whatever dude</Card.Description>
             {friendCheck === undefined
               ?
-              <button onClick={() => this.addFriend(id)}>Add as friend</button>
+              <button disabled={this.state.friendClick} 
+              onClick={() => this.addFriend(proId)}>{this.state.friendClick ? "Added!" : "Add as friend"}</button>
               :
-              <button onClick={() => this.removeFriend(id)}>Unfriend</button>
+              <button disabled={this.state.friendClick} 
+              onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>
             }
           </Card.Content>
           <Card.Content extra>
-            <a>
-              <Icon name='user' />
-              {friendList.map(friend => <div key={friend.id}>{friend.name}</div>)}
-            </a>
+            <Icon name='user' />
+            {friendList.map(friend => <div key={friend.id}><Link to={`/profile/${friend.id}`}>{friend.name}</Link></div>)}
 
           </Card.Content>
         </Card>
         <div className="w-50 ml5">
-          <CreatePageWithMutation wallId={id} wall={true} />
+          <CreatePageWithMutation wallId={proId} wall={true} />
           <Comment.Group>
             {posts && posts.map(post =>
               <Post
