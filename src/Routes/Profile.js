@@ -15,6 +15,13 @@ class Profile extends React.Component {
   state = {
     friendClick: false
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.location.key !== nextProps.location.key) {
+      this.props.feedQuery.refetch()
+    }
+  }
+
   async addFriend(proId) {
     this.setState({ friendClick: true })
     await this.props.friendMutation({
@@ -45,34 +52,33 @@ class Profile extends React.Component {
     const { proName, proId } = this.props.friendQuery.friendQuery
     const posts = this.props.feedQuery.feed
     const friendList = this.props.friendQuery.friendQuery.friendList
+    const me = this.props.meQuery.me.id
 
-    var friendCheck = friendList.find(x => x.id === this.props.match.params.id)
+    var friendCheck = friendList.find(x => x.id === me)
 
     return (
-      <div className="flex">
-        <Card className="fl w-50">
+      <div>
+        <Card className="flex fl w-50">
           <Image centered size="small" src='/avatar.png' />
           <Card.Content textAlign="center">
             <Card.Header>{proName}</Card.Header>
             <Card.Description>Whatever dude</Card.Description>
             {friendCheck === undefined
               ?
-              <button disabled={this.state.friendClick} 
-              onClick={() => this.addFriend(proId)}>{this.state.friendClick ? "Added!" : "Add as friend"}</button>
+              <button disabled={this.state.friendClick}
+                onClick={() => this.addFriend(proId)}>{this.state.friendClick ? "Added!" : "Add as friend"}</button>
               :
-              <button disabled={this.state.friendClick} 
-              onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>
+              <button disabled={this.state.friendClick}
+                onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>
             }
           </Card.Content>
-          <Card.Content extra>
-            <Icon name='user' />
-            {friendList.map(friend => <div key={friend.id}><Link to={`/profile/${friend.id}`}>{friend.name}</Link></div>)}
-
-          </Card.Content>
+          <div className="tc flex flex-column">
+            {friendList.map(friend => <span key={friend.id}><Link to={`/profile/${friend.id}`}>{friend.name}</Link></span>)}
+          </div>
         </Card>
         <div className="w-50 ml5">
           <CreatePageWithMutation wallId={proId} wall={true} />
-          <Comment.Group>
+          <Comment.Group className="flex flex-column ml5 pa4">
             {posts && posts.map(post =>
               <Post
                 key={post.id}
@@ -102,8 +108,8 @@ const FRIEND_QUERY = gql`
 `
 
 const FEED_QUERY = gql`
-  query FeedQuery($wallId: ID){
-    feed(wallId: $wallId){
+  query FeedQuery($wallId: ID, ){
+    feed(wallId: $wallId, orderBy: createdAt_DESC){
       id
       text
       title
@@ -136,7 +142,6 @@ const ME_QUERY = gql`
   query meQuery {
     me {
       id
-      friendList
     }
   }
 `

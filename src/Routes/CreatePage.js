@@ -53,7 +53,10 @@ class CreatePage extends React.Component {
     await this.props.createPostMutation({
       variables: { title, text, wallId },
     })
-    this.props.history.replace('/')
+    if (!this.props.wall) {
+      this.props.history.replace('/')
+    }
+    this.props.history.replace(`/profile/${wallId}`)
   }
 }
 

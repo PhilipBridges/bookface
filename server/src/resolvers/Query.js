@@ -4,6 +4,16 @@ const Query = {
   feed(parent, args, ctx, info) {
     return ctx.db.query.posts({ where: { wallId: args.wallId } }, info);
   },
+  async allFeed(parent, args, ctx, info) {
+    const userId = getUserId(ctx)
+    const getUser = await ctx.db.query.user({ where: { id: userId } },
+      `{
+        id
+        friendList
+      }`
+    )
+    return ctx.db.query.posts({ where: { author: { id_in: getUser.friendList}} }, info);
+  },
 
   post(parent, { id }, ctx, info) {
     return ctx.db.query.post({ where: { id } }, info)
