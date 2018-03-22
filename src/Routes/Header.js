@@ -52,7 +52,7 @@ class Header extends React.Component {
     }
 
     return (
-      <Menu inverted>
+      <Menu inverted pointing>
         <Menu.Item name='' active={activeItem === 'home'} onClick={this.handleItemClick}>Feed</Menu.Item>
         {authed
           ?

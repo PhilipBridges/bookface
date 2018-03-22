@@ -7,7 +7,7 @@ import Post from '../components/Post'
 import Loading from '../components/Loading'
 import CreatePageWithMutation from './CreatePage'
 
-import { Card, Icon, Image, Comment } from 'semantic-ui-react'
+import { Card, Image, Comment } from 'semantic-ui-react'
 
 import 'tachyons'
 

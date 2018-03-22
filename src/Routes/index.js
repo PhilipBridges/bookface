@@ -13,6 +13,7 @@ import Register from './Register'
 import Login from './Login'
 import Inbox from './Inbox'
 import Profile from './Profile'
+import FriendBar from '../components/FriendBar'
 
 import PrivateRoute from './PrivateRoute'
 import Header from './Header'
@@ -36,15 +37,16 @@ export default () =>
   <Router>
     <div>
       {Authed() ? <Header isAuthed={Authed()} /> : null}
+      {Authed() ? <FriendBar isAuthed={Authed()} /> : null}
       <Switch>
         <Route path="/register" component={Register} />
         <Route exact path="/login" render={() => (
           Authed() ? (
-            <Redirect to="/"/>
+            <Redirect to="/" />
           ) : (
-            <Login/>
-          )
-        )}/>
+              <Login />
+            )
+        )} />
         <PrivateRoute exact path="/" component={FeedPage} />
         <PrivateRoute path="/create" component={CreatePage} />
         <PrivateRoute path="/inbox" component={Inbox} />
