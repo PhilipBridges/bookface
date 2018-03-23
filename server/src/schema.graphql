@@ -9,6 +9,7 @@ type Query {
   boxQuery: [User!]
   messageQuery(first: Int, after: String, before: String, last: Int, orderBy: MessageOrderByInput): [Message!]!
   friendQuery(target: ID!): Profile
+  sidebarFriendQuery: [User!]!
 }
 
 type Mutation {

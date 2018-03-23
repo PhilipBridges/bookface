@@ -58,7 +58,7 @@ export default compose(
   graphql(FEED_QUERY, {
     name: "feedQuery", // name of the injected prop: this.props.feedQuery...
     options: {
-      fetchPolicy: "network-only",
+      fetchPolicy: "cache-first",
     },
   }),
 )(FeedPage)

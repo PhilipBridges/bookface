@@ -52,6 +52,23 @@ const Query = {
       return { id: currUser.id, name: currUser.name }
     })
     return { friendList: newList, proId: getUser.id, proName: getUser.name }
+  },
+  
+  async sidebarFriendQuery(parent, args, ctx, info) {
+    const userId = getUserId(ctx)
+    const getUser = await ctx.db.query.user({ where: { id: userId } },
+      `{
+        id
+        name
+        friendList
+      }`
+    )
+    const friendList = getUser.friendList
+    const newList = friendList.map(async (friend) => {
+      const currUser = await ctx.db.query.user({ where: { id: friend } })
+      return { id: currUser.id, name: currUser.name }
+    })
+    return newList
   }
 
 }

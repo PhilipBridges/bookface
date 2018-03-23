@@ -153,7 +153,7 @@ export default compose(
   graphql(FEED_QUERY, {
     name: "feedQuery",
     options: (props) => ({
-      fetchPolicy: "cache-and-network",
+      fetchPolicy: "cache-first",
       variables: {
         wallId: props.match.params.id
       },
@@ -162,7 +162,7 @@ export default compose(
   graphql(FRIEND_QUERY, {
     name: "friendQuery",
     options: (props) => ({
-      fetchPolicy: "cache-and-network",
+      fetchPolicy: "cache-first",
       variables: {
         target: props.match.params.id
       },

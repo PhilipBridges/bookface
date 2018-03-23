@@ -52,13 +52,12 @@ class Header extends React.Component {
     }
 
     return (
-      <Menu inverted pointing>
+      <Menu fixed style={{paddingLeft: "15rem"}} inverted pointing>
         <Menu.Item name='' active={activeItem === 'home'} onClick={this.handleItemClick}>Feed</Menu.Item>
         {authed
           ?
           <React.Fragment>
             <Menu.Item name='inbox' active={activeItem === 'inbox'} onClick={this.handleItemClick} />
-            <Menu.Item name='friends' active={activeItem === 'friends'} onClick={this.handleItemClick} />
             <Menu.Item id={this.state.user.id} name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick}>
               Profile ({this.state.user.name})
             </Menu.Item>

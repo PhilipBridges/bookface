@@ -2,6 +2,8 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import decode from 'jwt-decode'
 
+import 'tachyons'
+
 const Authed = () => {
   const token = localStorage.getItem("token")
   try {
@@ -21,11 +23,9 @@ export const PrivateRoute = ({
       render={(props =>
         (Authed() ?
           (
-            <React.Fragment>
-              <div className="fl w-100 pl4 pr4">
-                <Component {...props} />
-              </div>
-            </React.Fragment>
+            <div style={{paddingLeft: "18rem"}} className="fr w-100">
+              <Component {...props} />
+            </div>
           )
           : (
             <Redirect

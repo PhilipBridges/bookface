@@ -13,6 +13,7 @@ import Register from './Register'
 import Login from './Login'
 import Inbox from './Inbox'
 import Profile from './Profile'
+import LeftBar from '../components/LeftBar'
 import FriendBar from '../components/FriendBar'
 
 import PrivateRoute from './PrivateRoute'
@@ -20,7 +21,6 @@ import Header from './Header'
 import decode from 'jwt-decode'
 
 import 'semantic-ui-css/semantic.min.css';
-import 'tachyons'
 import '../index.css'
 
 const Authed = () => {
@@ -37,6 +37,7 @@ export default () =>
   <Router>
     <div>
       {Authed() ? <Header isAuthed={Authed()} /> : null}
+      {Authed() ? <LeftBar isAuthed={Authed()} /> : null}
       {Authed() ? <FriendBar isAuthed={Authed()} /> : null}
       <Switch>
         <Route path="/register" component={Register} />
