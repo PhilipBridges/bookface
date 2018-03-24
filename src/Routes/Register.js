@@ -20,7 +20,7 @@ class Register extends React.Component {
     await this.props.registerMutation({
       variables: { name, email, password },
     })
-    this.props.history.replace('/')
+    this.props.history.replace('/feed')
   }
   render() {
     const {

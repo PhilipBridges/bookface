@@ -50,7 +50,7 @@ class DetailPage extends React.Component {
     await this.props.deletePost({
       variables: { id },
     })
-    this.props.history.replace('/')
+    this.props.history.replace('/feed')
   }
 
 }

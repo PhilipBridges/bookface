@@ -43,12 +43,12 @@ export default () =>
         <Route path="/register" component={Register} />
         <Route exact path="/login" render={() => (
           Authed() ? (
-            <Redirect to="/" />
+            <Redirect to="/feed" />
           ) : (
               <Login />
             )
         )} />
-        <PrivateRoute exact path="/" component={FeedPage} />
+        <PrivateRoute exact path="/feed" component={FeedPage} />
         <PrivateRoute path="/create" component={CreatePage} />
         <PrivateRoute path="/inbox" component={Inbox} />
         <PrivateRoute path="/post/:id" component={DetailPage} />

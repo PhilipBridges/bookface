@@ -54,7 +54,7 @@ class CreatePage extends React.Component {
       variables: { title, text, wallId },
     })
     if (!this.props.wall) {
-      this.props.history.replace('/')
+      this.props.history.replace('/feed')
     }
     this.props.history.replace(`/profile/${wallId}`)
   }

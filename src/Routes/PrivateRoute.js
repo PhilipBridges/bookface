@@ -23,7 +23,7 @@ export const PrivateRoute = ({
       render={(props =>
         (Authed() ?
           (
-            <div style={{paddingLeft: "18rem"}} className="fr w-100">
+            <div style={{paddingLeft: "18rem", marginTop: '4rem'}} className="fr w-100">
               <Component {...props} />
             </div>
           )

@@ -76,9 +76,9 @@ class Profile extends React.Component {
             {friendList.map(friend => <span key={friend.id}><Link to={`/profile/${friend.id}`}>{friend.name}</Link></span>)}
           </div>
         </Card>
-        <div className="w-50 ml5">
+        <div className="ml5">
           <CreatePageWithMutation wallId={proId} wall={true} />
-          <Comment.Group className="flex flex-column ml5 pa4">
+          <Comment.Group style={{textAlign: 'center'}} className="flex flex-column ml5 pa4 tac">
             {posts && posts.map(post =>
               <Post
                 key={post.id}

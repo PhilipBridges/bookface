@@ -15,7 +15,7 @@ class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeItem: 'home',
+      activeItem: 'feed',
       user: {}
     }
   }
@@ -52,8 +52,8 @@ class Header extends React.Component {
     }
 
     return (
-      <Menu fixed style={{paddingLeft: "15rem"}} inverted pointing>
-        <Menu.Item name='' active={activeItem === 'home'} onClick={this.handleItemClick}>Feed</Menu.Item>
+      <Menu fixed='top' style={{paddingLeft: "15rem"}} inverted pointing>
+        <Menu.Item name='feed' active={activeItem === 'feed'} onClick={this.handleItemClick}>Feed</Menu.Item>
         {authed
           ?
           <React.Fragment>

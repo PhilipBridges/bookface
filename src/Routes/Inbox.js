@@ -147,7 +147,7 @@ export default compose(
   graphql(MESSAGE_QUERY, {
     name: 'messageQuery',
     options: {
-      fetchPolicy: "cache-and-network",
+      fetchPolicy: "cache-first",
       variables: {
         first: 10,
         after: undefined,
@@ -157,7 +157,7 @@ export default compose(
   graphql(ME_QUERY, {
     name: 'meQuery',
     options: {
-      fetchPolicy: "cache-and-network",
+      fetchPolicy: "cache-first",
     },
   }),
   graphql(DELETE_MESSAGE, {
