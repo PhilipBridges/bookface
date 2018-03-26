@@ -1,93 +1,106 @@
-import React from 'react'
-import { graphql, compose } from 'react-apollo'
+import React from 'react';
+import { Form, Button, Input, Header, Modal } from 'semantic-ui-react';
+import { graphql, compose } from 'react-apollo';
+import gql from 'graphql-tag';
+import { withFormik } from 'formik';
+import Yup from 'yup';
 import { withRouter } from 'react-router-dom'
-import gql from 'graphql-tag'
-import moment from 'moment'
 
-import Loading from './Loading'
+import '../Style/Form.css';
+
+const MessageBox = props => {
+  const {
+    values,
+    touched,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleSubmit,
+  } = props;
+  return (
+    <Modal className="ui modal" show>
+      <Header as="h2">Message</Header>
+      <Form>
+        <Form.Field >
+          <Input
+            id="target"
+            type="text"
+            autoComplete="user"
+            onChange={handleChange}
+            value={values.target}
+            placeholder="User"
+            fluid
+            className={errors.target && touched.target ? 'text-input error' : 'text-input'}
+          />
+        </Form.Field>
+
+        {errors.target &&
+          touched.target && <div className="input-feedback">{errors.target}</div>}
+
+        <Form.Field>
+          <Input
+            id="text"
+            onChange={handleChange}
+            value={values.text}
+            type="text"
+            placeholder=""
+            fluid
+            autoComplete="text"
+            className={errors.text && touched.text ? 'text-input error' : 'text-input'}
+          />
+        </Form.Field>
 
 
-class MessageBox extends React.Component {
-  render() {
-    if (this.props.postQuery.loading) {
-      return (
-        <div className="flex w-100 h-100 items-center justify-center pt7">
-          <div><Loading /></div>
-        </div>
-      )
-    }
+        <Button type="submit" disabled={isSubmitting} onClick={handleSubmit}>Submit</Button>
+      </Form>
+      {errors.text &&
+        touched.text && <div className="input-feedback">{errors.text}</div>}
+      {props.errors.error && <div>{props.errors.error.target}</div>}
+    </Modal>
+  );
+};
 
-    const { post } = this.props.postQuery
-
-    let action = this._renderAction(post)
-
-    return (
-      <React.Fragment>
-        <h1>{post.author.name} </h1>
-        <h2 className="f3 black-80 fw4 lh-solid">{post.title}</h2>
-        <span>{moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
-        <p className="black-80 fw3">{post.text}</p>
-
-        <span>
-          {action}
-        </span>
-      </React.Fragment>
-    )
-  }
-
-  _renderAction = ({ id }) => {
-    return (
-      <a
-        className="f6 dim br1 ba ph3 pv2 mb2 dib black pointer"
-        onClick={() => this.deletePost(id)}
-      >
-        Delete
-      </a>
-    )
-  }
-
-  deletePost = async id => {
-    await this.props.deletePost({
-      variables: { id },
-    })
-    this.props.history.replace('/feed')
-  }
-
-}
-
-const POST_QUERY = gql`
-  query PostQuery($id: ID!) {
-    post(id: $id) {
-      createdAt
-      id
-      title
+const CREATE_MESSAGE_MUTATION = gql`
+  mutation CreateMessageMutation($target: String!, $text: String!) {
+    createMessage(target: $target, text: $text) {
       text
-      author {
-        name
+      target {
+        id
       }
     }
   }
 `
 
-const DELETE_MUTATION = gql`
-  mutation deletePost($id: ID!) {
-    deletePost(id: $id) {
-      id
-    }
-  }
-`
-
 export default compose(
-  graphql(POST_QUERY, {
-    name: 'postQuery',
-    options: props => ({
-      variables: {
-        id: props.match.params.id,
-      },
-    }),
-  }),
-  graphql(DELETE_MUTATION, {
-    name: 'deletePost',
-  }),
   withRouter,
-)(MessageBox)
+  graphql(CREATE_MESSAGE_MUTATION),
+  withFormik({
+    mapPropsToValues: () => ({ target: '', text: '', error: '' }),
+    validationSchema: Yup.object().shape({
+      target: Yup.string()
+        .required('Username is required.'),
+      text: Yup.string()
+        .required('You must input a message.'),
+    }),
+    handleSubmit: async (
+      values,
+      { props: { target, text, errors, mutate, history }, setSubmitting, setFieldError },
+    ) => {
+      const response = await mutate({
+        variables: { target: values.target, text: values.text, error: values.error },
+      })
+
+      const valid = response.data.createMessage.target
+
+      if (valid !== null) {
+        setSubmitting(false)
+        history.push('/feed')
+      } else {
+        setSubmitting(false)
+        setFieldError("error", { target: "User not found." })
+      }
+    },
+    displayName: 'MessageBox', // helps with React DevTools
+  }))(MessageBox);
+
+  

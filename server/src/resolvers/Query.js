@@ -12,7 +12,7 @@ const Query = {
         friendList
       }`
     )
-    return ctx.db.query.posts({ where: { author: { id_in: getUser.friendList}} }, info);
+    return ctx.db.query.posts({ where: { author: { id_in: getUser.friendList } } }, info);
   },
 
   post(parent, { id }, ctx, info) {
@@ -28,9 +28,9 @@ const Query = {
   userQuery(parent, args, ctx, info) {
     return ctx.db.query.users(info)
   },
-  boxQuery(parent, args, ctx, info) {
+  boxQuery(parent, { target, sender }, ctx, info) {
     const userId = getUserId(ctx)
-    return ctx.db.query.users({ where: { sentMessages_some: { sender: userId } } }, info)
+    return ctx.db.query.users({ where: { sentMessages_every: { sender, target } } }, info)
   },
   messageQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)
@@ -53,7 +53,7 @@ const Query = {
     })
     return { friendList: newList, proId: getUser.id, proName: getUser.name }
   },
-  
+
   async sidebarFriendQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)
     const getUser = await ctx.db.query.user({ where: { id: userId } },

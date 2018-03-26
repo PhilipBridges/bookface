@@ -6,7 +6,7 @@ type Query {
   post(id: ID!, wallId: ID): Post!
   me: User
   userQuery: [User!]
-  boxQuery: [User!]
+  boxQuery(target: ID!, sender: ID!, first: Int, after: String, before: String, last: Int, orderBy: MessageOrderByInput): [Message!]!
   messageQuery(first: Int, after: String, before: String, last: Int, orderBy: MessageOrderByInput): [Message!]!
   friendQuery(target: ID!): Profile
   sidebarFriendQuery: [User!]!

@@ -2,8 +2,10 @@ import React from 'react'
 import Post from '../components/Post'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
+import { withRouter } from 'react-router-dom'
 
 import Loading from '../components/Loading'
+import MessageBox from '../components/MessageBox'
 
 import 'tachyons'
 
@@ -61,4 +63,4 @@ export default compose(
       fetchPolicy: "cache-first",
     },
   }),
-)(FeedPage)
+withRouter)(FeedPage)
