@@ -56,6 +56,8 @@ class Profile extends React.Component {
 
     var friendCheck = friendList.find(x => x.id === me)
 
+    console.log(friendList)
+    console.log(me)
     return (
       <div>
         <Card className="flex fl w-50">
@@ -63,14 +65,16 @@ class Profile extends React.Component {
           <Card.Content textAlign="center">
             <Card.Header>{proName}</Card.Header>
             <Card.Description>Whatever dude</Card.Description>
+
             {friendCheck === undefined
-              ?
+              && me !== this.props.match.params.id
+              &&
               <button disabled={this.state.friendClick}
-                onClick={() => this.addFriend(proId)}>{this.state.friendClick ? "Added!" : "Add as friend"}</button>
-              :
+                onClick={() => this.addFriend(proId)}>{this.state.friendClick ? "Added!" : "Add as friend"}</button>}
+            {friendCheck !== undefined && me !== this.props.match.params.id
+              &&
               <button disabled={this.state.friendClick}
-                onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>
-            }
+                onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>}
           </Card.Content>
           <div className="tc flex flex-column">
             {friendList.map(friend => <span key={friend.id}><Link to={`/profile/${friend.id}`}>{friend.name}</Link></span>)}
@@ -78,7 +82,7 @@ class Profile extends React.Component {
         </Card>
         <div className="ml5">
           <CreatePageWithMutation wallId={proId} wall={true} />
-          <Comment.Group style={{textAlign: 'center'}} className="flex flex-column ml5 pa4 tac">
+          <Comment.Group style={{ textAlign: 'center' }} className="flex flex-column ml5 pa4 tac">
             {posts && posts.map(post =>
               <Post
                 key={post.id}

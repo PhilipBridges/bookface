@@ -48,6 +48,7 @@ export default () =>
               <Login />
             )
         )} />
+        <Route exact path="/" render={() => <Redirect to='/feed' />} />
         <PrivateRoute exact path="/feed" component={FeedPage} />
         <PrivateRoute path="/create" component={CreatePage} />
         <PrivateRoute path="/inbox" component={Inbox} />
