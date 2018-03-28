@@ -121,6 +121,7 @@ query messageQuery($first: Int, $after: String, $last: Int, $before: String){
     }
     target {
       id
+      name
     }
     createdAt
 	} 

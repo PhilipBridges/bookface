@@ -30,11 +30,15 @@ const Query = {
   },
   boxQuery(parent, { sender }, ctx, info) {
     const userId = getUserId(ctx)
-    return ctx.db.query.messages({ where: { OR: [{ sender: { id: sender }, target: { id: userId } }], } }, info)
+    return ctx.db.query.messages({
+      where: {
+        AND: [{ sender: { OR: [{ id_in: [sender, userId] }] } }, { target: { OR: [{ id_in: [sender, userId] }] } }]
+      }
+    }, info)
   },
   messageQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)
-    return ctx.db.query.messages({ where: { OR: [{ sender: { id: userId }, target: { id: userId } }], } }, info)
+    return ctx.db.query.messages({ where: { OR: [{ sender: { id: userId } }, { target: { id: userId } }], } }, info)
   },
   async friendQuery(parent, { target }, ctx, info) {
     const getUser = await ctx.db.query.user({ where: { id: target } },

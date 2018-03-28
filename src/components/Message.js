@@ -19,7 +19,7 @@ const Message = (props) =>
   <Comment>
     <Comment.Content className="w-50 no-underline inline-block">
     <p>{moment(props.message.createdAt).format('MMMM Do YYYY, h:mm a')}</p>
-      <Comment.Author as='a'>{props.message.sender.name}</Comment.Author>
+      <Comment.Author as='a'>{props.message.sender.name} => {props.message.target.name}</Comment.Author>
       <Comment.Metadata>
       </Comment.Metadata>
       <Comment.Text>{props.message.text}</Comment.Text>

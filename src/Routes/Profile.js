@@ -56,8 +56,6 @@ class Profile extends React.Component {
 
     var friendCheck = friendList.find(x => x.id === me)
 
-    console.log(friendList)
-    console.log(me)
     return (
       <div>
         <Card className="flex fl w-50">
