@@ -5,7 +5,6 @@ import moment from 'moment'
 
 import Post from './Post'
 
-
 import { Comment, Divider } from 'semantic-ui-react'
 
 const _deleteMessage = async (props) => {

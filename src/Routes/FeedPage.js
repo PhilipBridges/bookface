@@ -5,7 +5,6 @@ import gql from 'graphql-tag'
 import { withRouter } from 'react-router-dom'
 
 import Loading from '../components/Loading'
-import MessageBox from '../components/MessageBox'
 
 import 'tachyons'
 
