@@ -1,4 +1,4 @@
-# import Post, Message from "./generated/prisma.graphql"
+# import Post, Message, MessageSubscriptionPayload from "./generated/prisma.graphql"
 
 type Query {
   feed(wallId: ID, orderBy: MessageOrderByInput): [Post!]!
@@ -10,6 +10,10 @@ type Query {
   messageQuery(first: Int, after: String, before: String, last: Int, orderBy: MessageOrderByInput): [Message!]!
   friendQuery(target: ID!): Profile
   sidebarFriendQuery: [User!]!
+}
+
+type Subscription {
+  messageSub: MessageSubscriptionPayload
 }
 
 type Mutation {
