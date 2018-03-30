@@ -1,0 +1,21 @@
+@media only screen and (max-width: 768px) {
+  .ui.wide.left.sidebar, .ui.wide.right.sidebar {
+    height: 100vh !important;
+    position: absolute;
+  }
+
+  .pusher {
+    margin-left: 20px;
+  }
+}
+
+.pushable {
+  min-height: 100vh;
+}
+
+.ui.wide.left.sidebar, .ui.wide.right.sidebar {
+  height: 100vh;
+  position: fixed !important;
+  bottom: 0px !important;
+  top: 0px !important;
+}
