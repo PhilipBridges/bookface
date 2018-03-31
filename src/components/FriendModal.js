@@ -11,13 +11,14 @@ import 'tachyons'
 
 class FriendModal extends React.Component {
   state = {
-    data: 'asd'
+    data: '',
+    datedList: null
   }
 
   modalOpen = async () => {
     const response = await client.query({
       query: BOX_QUERY,
-      variables: { sender: this.props.friend.id }
+      variables: { sender: this.props.friend.id },
     })
     this.setState({ data: response })
     return response
@@ -38,19 +39,33 @@ class FriendModal extends React.Component {
       return datedList
     })
 
+    if (datedList && this.state.datedList === null) {
+      this.setState({ datedList })
+    }
+
     return (
       <Modal
         closeOnDimmerClick={true}
         closeOnDocumentClick={true}
         onOpen={() => this.modalOpen()}
         dimmer={false}
-        style={{ margin: "auto", marginTop: "auto", position: 'absolute', bottom: 0, right: 0 }}
+        style={{ margin: "auto", marginTop: "auto", position: 'absolute', bottom: 0, right: 0, maxWidth: '25%' }}
         trigger={<Button>{this.props.friend.name}</Button>}
         size='tiny'
       >
         <Header>{this.props.friend.name}</Header>
         <div className="flex flex-column pb3 pt3">
-          {datedList && datedList.map(message => {
+          <Subscription
+            subscription={MESSAGE_SUBSCRIPTION}
+            variables={{ sender: this.props.friend.id }}
+          >
+            {({ data, loading }) => (
+              <div>
+                {data && data.message && this.setState({ datedList: [...this.state.datedList, data.message.node] })}
+              </div>
+            )}
+          </Subscription>
+          {this.state.datedList && this.state.datedList.map(message => {
             if (message.sender.id === this.props.friend.id) {
               return (
                 <div style={{ float: 'left', paddingLeft: '1rem' }} key={message.id}>
@@ -65,14 +80,6 @@ class FriendModal extends React.Component {
             )
           })}
         </div>
-        <Subscription subscription={MESSAGE_SUBSCRIPTION} variables={{ sender: this.props.friend.id }}>
-          {({ data }) => (
-            <h4>New comment: {data}
-              {console.log(data)}
-            </h4>
-
-          )}
-        </Subscription>
         <MessageBar target={this.props.friend.name} />
       </Modal>
     )
@@ -96,12 +103,22 @@ query boxQuery($sender: ID!){
 }`
 
 const MESSAGE_SUBSCRIPTION = gql`
-  subscription messageSubscription($sender: ID!) {
-    messageSubscription(sender: $sender, orderBy: createdAt_DESC) {
+  subscription {
+  message(orderBy: createdAt_DESC){
+    node {
       id
       text
+      sender {
+        id
+        name
+      }
+      target {
+        id
+      }
+      createdAt
     }
   }
+}
 `;
 
 export default FriendModal

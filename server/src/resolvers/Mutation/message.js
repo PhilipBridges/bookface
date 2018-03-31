@@ -5,7 +5,10 @@ const message = {
     const userId = getUserId(ctx)
     const receiver = await ctx.db.query.user({ where: { name: target } })
     if (receiver == null) {
-      return {data: null}
+      return { data: null }
+    }
+    if (receiver.id === userId) {
+      return { error: 'same' }
     }
     return ctx.db.mutation.createMessage({
       data: {
@@ -24,6 +27,12 @@ const message = {
     return ctx.db.mutation.deleteMessage({
       where: { id }
     })
+  },
+  async deleteMessages(parents, { id }, ctx, info) {
+    ctx.db.mutation.deleteManyMessages({
+      where: { sender: { id: id } }
+    })
+    return { count: 0 }
   }
 }
 

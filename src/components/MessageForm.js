@@ -44,7 +44,7 @@ const MessageForm = props => {
             type="text"
             placeholder=""
             fluid
-            autoComplete="text"
+            autoComplete="off"
             className={errors.text && touched.text ? 'text-input error' : 'text-input'}
           />
         </Form.Field>
@@ -67,6 +67,7 @@ const CREATE_MESSAGE_MUTATION = gql`
       target {
         id
       }
+      error
     }
   }
 `
@@ -90,7 +91,10 @@ export default compose(
       })
 
       const valid = response.data.createMessage.target
-
+      if (response.data.createMessage.error === "same") {
+        setSubmitting(false)
+        return setFieldError("error", { target: "Cannot message yourself" })
+      }
       if (valid !== null) {
         setSubmitting(false)
         history.replace('/inbox')

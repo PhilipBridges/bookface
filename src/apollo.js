@@ -33,11 +33,11 @@ const httpLinkWithMiddleware = afterwareLink.concat(
 );
 
 const wsLink = new WebSocketLink({
-  uri: "ws://localhost:4000/subscriptions",
+  uri: 'ws://localhost:4000',
   options: {
     reconnect: true,
     connectionParams: {
-      token: localStorage.getItem("token"),
+      token: localStorage.getItem('token'),
     }
   }
 });

@@ -1,4 +1,4 @@
-# import Post, Message, MessageSubscriptionPayload from "./generated/prisma.graphql"
+# import Post, Message, MessageSubscriptionPayload, PostSubscriptionPayload, BatchPayload from "./generated/prisma.graphql"
 
 type Query {
   feed(wallId: ID, orderBy: MessageOrderByInput): [Post!]!
@@ -13,7 +13,7 @@ type Query {
 }
 
 type Subscription {
-  messageSub: MessageSubscriptionPayload
+  message(orderBy: MessageOrderByInput): MessageSubscriptionPayload
 }
 
 type Mutation {
@@ -21,8 +21,9 @@ type Mutation {
   login(email: String!, password: String!): AuthPayload!
   createPost(title: String!, text: String!, wallId: ID): Post!
   deletePost(id: ID!): Post!
-  createMessage(text: String!, target: String!): Message!
+  createMessage(text: String!, target: String!, error: String): MessagePayload
   deleteMessage(id: ID!): Message
+  deleteMessages(id: ID!): BatchPayload!
   addFriend(target: ID!): User
   deleteFriend(target: ID!): User
 }
@@ -45,4 +46,13 @@ type Profile {
   proId: ID!
   proName: String!
   friendList: [User!]!
+}
+
+type MessagePayload {
+  id: ID
+  text: String
+  sender(where: UserWhereInput): User
+  target(where: UserWhereInput): User
+  createdAt: DateTime
+  error: String
 }

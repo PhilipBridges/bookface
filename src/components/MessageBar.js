@@ -69,7 +69,7 @@ export default compose(
     }),
     handleSubmit: async (
       values,
-      { props: { target, text, errors, mutate, history }, setSubmitting, setFieldError },
+      { props: { target, text, errors, mutate, history }, setFieldValue, setSubmitting, setFieldError },
     ) => {
       const response = await mutate({
         variables: { target: values.target, text: values.text, error: values.error },
@@ -78,6 +78,7 @@ export default compose(
       const valid = response.data.createMessage.target
 
       if (valid !== null) {
+        setFieldValue('text', '')
         setSubmitting(false)
       } else {
         setSubmitting(false)

@@ -15,16 +15,13 @@ const server = new GraphQLServer({
       typeDefs: "src/generated/prisma.graphql",
       endpoint: process.env.PRISMA_ENDPOINT,
       secret: process.env.PRISMA_SECRET,
-      debug: true,
+      debug: true
     }),
   }),
 })
 
 const options = {
   port: 4000,
-  endpoint: '/graphql',
-  subscriptions: '/subscriptions',
-  playground: '/playground',
 }
 
-CORS(server.start(options, ({ port }) => console.log(`Server is running on ${port}`)))
+CORS(server.start(options, ({ port }) => console.log(`Server is running on ${port}.`)))
