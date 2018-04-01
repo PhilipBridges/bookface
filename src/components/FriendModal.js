@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Modal, Header } from 'semantic-ui-react'
 import gql from 'graphql-tag'
 import moment from 'moment'
-import { Subscription } from 'react-apollo'
+import { Subscription, Query } from 'react-apollo'
 
 import MessageBar from './MessageBar'
 import client from '../apollo'
@@ -54,17 +54,38 @@ class FriendModal extends React.Component {
         size='tiny'
       >
         <Header>{this.props.friend.name}</Header>
+
         <div className="flex flex-column pb3 pt3">
-          <Subscription
-            subscription={MESSAGE_SUBSCRIPTION}
-            variables={{ sender: this.props.friend.id }}
-          >
-            {({ data, loading }) => (
-              <div>
-                {data && data.message && this.setState({ datedList: [...this.state.datedList, data.message.node] })}
+
+
+          <Query query={BOX_QUERY} variables={{ sender: this.props.friend.id }}>
+            {({ loading, data, subscribeToMore }) => {
+              if (loading) {
+                return null;
+              }
+
+              // fix return array/object
+
+              subscribeToMore({
+                document: MESSAGE_SUBSCRIPTION,
+                updateQuery: (prev, { subscriptionData }) => {
+                  if (!subscriptionData.data) return prev;
+                  const message = subscriptionData.data.message.node;
+                  return {
+                    boxQuery: [prev.boxQuery, ...message]
+                  };
+                }
+              });
+              return <div>
+              {console.log(data)}
+                {data && data.boxQuery.map(message => (
+                  <div key={message.id}>{message.text}</div>
+                ))}
               </div>
-            )}
-          </Subscription>
+            }}
+          </Query>
+
+
           {this.state.datedList && this.state.datedList.map(message => {
             if (message.sender.id === this.props.friend.id) {
               return (
@@ -86,39 +107,65 @@ class FriendModal extends React.Component {
   }
 }
 
+const MessagePageWithData = () => (
+  <Query query={BOX_QUERY} variables={{ sender: this.props.friend.id }}>
+    {({ loading, data, subscribeToMore }) => {
+      console.log(data)
+
+      if (loading) {
+        return null;
+      }
+
+      subscribeToMore({
+        document: MESSAGE_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          console.log(prev)
+          if (!subscriptionData.data) return prev;
+          const { message } = subscriptionData.data;
+          return {
+            ...prev,
+            BOX_QUERY: [...prev.messages, message]
+          };
+        }
+      });
+      return <div>{console.log(data)}</div>;
+    }}
+  </Query>
+);
+
 const BOX_QUERY = gql`
 query boxQuery($sender: ID!){
-    boxQuery(sender: $sender, orderBy: createdAt_DESC){
-      id
+          boxQuery(sender: $sender, orderBy: createdAt_DESC){
+          id
       text
-      sender {
-        id
+        sender {
+          id
         name
-      }
+        }
       target {
-        id
-      }
-      createdAt
-	} 
-}`
+          id
+        }
+        createdAt
+    }
+  }`
 
 const MESSAGE_SUBSCRIPTION = gql`
   subscription {
-  message(orderBy: createdAt_DESC){
-    node {
-      id
-      text
+          message(orderBy: createdAt_DESC){
+          node {
+        id
+        text
       sender {
-        id
+          id
         name
-      }
+        }
       target {
-        id
+          id
+        }
+        createdAt
       }
-      createdAt
     }
   }
-}
-`;
+  `;
 
 export default FriendModal
