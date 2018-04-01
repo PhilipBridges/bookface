@@ -64,74 +64,35 @@ class FriendModal extends React.Component {
                 return null;
               }
 
-              // fix return array/object
-
               subscribeToMore({
                 document: MESSAGE_SUBSCRIPTION,
                 updateQuery: (prev, { subscriptionData }) => {
                   if (!subscriptionData.data) return prev;
                   const message = subscriptionData.data.message.node;
-                  return {
-                    boxQuery: [prev.boxQuery, ...message]
-                  };
+                  const newList = prev.boxQuery.filter(msg => msg.id !== message.id)
+                    return {
+                      boxQuery: [...newList, message]
+                    }
                 }
               });
-              return <div>
-              {console.log(data)}
-                {data && data.boxQuery.map(message => (
-                  <div key={message.id}>{message.text}</div>
-                ))}
-              </div>
+              return (
+                <div>
+                  {data && data.boxQuery.map(message => (
+                    <div key={message.id}>{message.text}</div>
+                  ))}
+                </div>
+              )
             }}
           </Query>
 
 
-          {this.state.datedList && this.state.datedList.map(message => {
-            if (message.sender.id === this.props.friend.id) {
-              return (
-                <div style={{ float: 'left', paddingLeft: '1rem' }} key={message.id}>
-                  {message.text} <span style={{ fontSize: '.7rem' }}>@ {moment(message.createdAt).format('ddd, h:mm a')}</span>
-                </div>
-              )
-            }
-            return (
-              <div style={{ float: 'right', marginLeft: 'auto', paddingRight: '1rem' }} key={message.id}>
-                {message.text} <span style={{ fontSize: '.7rem' }}>@ {moment(message.createdAt).format('ddd, h:mm a')}</span>
-              </div>
-            )
-          })}
+
         </div>
         <MessageBar target={this.props.friend.name} />
       </Modal>
     )
   }
 }
-
-const MessagePageWithData = () => (
-  <Query query={BOX_QUERY} variables={{ sender: this.props.friend.id }}>
-    {({ loading, data, subscribeToMore }) => {
-      console.log(data)
-
-      if (loading) {
-        return null;
-      }
-
-      subscribeToMore({
-        document: MESSAGE_SUBSCRIPTION,
-        updateQuery: (prev, { subscriptionData }) => {
-          console.log(prev)
-          if (!subscriptionData.data) return prev;
-          const { message } = subscriptionData.data;
-          return {
-            ...prev,
-            BOX_QUERY: [...prev.messages, message]
-          };
-        }
-      });
-      return <div>{console.log(data)}</div>;
-    }}
-  </Query>
-);
 
 const BOX_QUERY = gql`
 query boxQuery($sender: ID!){

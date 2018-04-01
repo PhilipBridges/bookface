@@ -36,6 +36,12 @@ const Query = {
       }
     }, info)
   },
+
+  // 1. make return a const
+  // 2. make target and sender list with filters
+  // 3. return new list using concat()
+  // 4. arrange new list by date
+  
   messageQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)
     return ctx.db.query.messages({ where: { OR: [{ sender: { id: userId } }, { target: { id: userId } }], } }, info)
