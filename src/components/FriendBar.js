@@ -26,7 +26,7 @@ class FriendBar extends Component {
     }
 
     return (
-      <Menu size='mini' style={{ marginTop: "4rem", textAlign: 'center' }} className='flex vertical right fixed'>
+      <Menu size='mini' style={{ marginTop: "4rem", textAlign: 'center', maxWidth: '25%' }} className='flex vertical right fixed'>
         {this.props.friendQuery.sidebarFriendQuery.map(friend =>
           <Friend key={friend.id} friend={friend} history={this.props.history} />
         )}

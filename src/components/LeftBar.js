@@ -1,46 +1,60 @@
 import React, { Component } from 'react'
-import { Dropdown, Menu, Icon, } from 'semantic-ui-react'
+import { Menu, Icon, } from 'semantic-ui-react'
 import Search from './Search'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
+import { withRouter } from 'react-router-dom'
 
 import 'tachyons'
 
 class LeftBar extends Component {
-  state = {}
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   componentDidMount() { }
 
   render() {
-    const { activeItem } = this.state
 
     return (
-      <Menu className='flex inverted vertical left fixed'>
+      <Menu className='flex inverted vertical left fixed' style={{ maxWidth: '25%' }}>
         <Menu.Item>
           Home
-              <Icon name='dashboard' />
-          <Menu.Menu>
-            <Menu.Item>
-              <Search />
-            </Menu.Item>
-          </Menu.Menu>
+        <Icon name='dashboard' />
         </Menu.Item>
-        <Menu.Item name='browse' active={activeItem === 'browse'} onClick={this.handleItemClick}>
-          <Icon name='grid layout' />
-          Browse
-                </Menu.Item>
-        <Menu.Item name='messages' active={activeItem === 'messages'} onClick={this.handleItemClick}>
-          Messages
-                    </Menu.Item>
-
-        <Dropdown item text='More'>
-          <Dropdown.Menu>
-            <Dropdown.Item icon='edit' text='Edit Profile' />
-          </Dropdown.Menu>
-        </Dropdown>
+        <Query query={USER_QUERY}>
+          {({ loading, data }) => {
+            if (loading) {
+              return null;
+            }
+            let newList = []
+            if (!loading) {
+              newList = data.userQuery.map(user => user.name)
+            }
+            return (
+              <Search
+                items={newList}
+                onChange={(selectedItem) => {
+                  const target = data.userQuery.filter(user => user.name === selectedItem)
+                  console.log(target)
+                  target && this.props.history.push(`/profile/${target[0].id}`)
+                }}
+                history={this.props.history}
+                friendId={!loading && data.userQuery.id}
+              />
+            )
+          }}
+        </Query>
       </Menu>
     )
   }
 }
 
-export default LeftBar
+const USER_QUERY = gql`
+query {
+  userQuery {
+    id
+    name
+  }
+}`
+
+export default (withRouter)(LeftBar)

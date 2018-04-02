@@ -30,8 +30,8 @@ class FriendModal extends React.Component {
         closeOnDocumentClick={true}
         onOpen={() => this.modalOpen()}
         dimmer={false}
-        style={{ margin: "auto", marginTop: "auto", position: 'absolute', bottom: 0, right: 0, maxWidth: '25%' }}
-        trigger={<Button>{this.props.friend.name}</Button>}
+        style={{ margin: "auto", marginTop: "auto", position: 'absolute', bottom: 0, right: 0, maxWidth: '20%' }}
+        trigger={<Button size='tiny'>{this.props.friend.name}</Button>}
         size='tiny'
       >
         <Header>{this.props.friend.name}</Header>
