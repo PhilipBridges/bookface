@@ -28,20 +28,28 @@ const Query = {
   userQuery(parent, args, ctx, info) {
     return ctx.db.query.users(info)
   },
-  boxQuery(parent, { sender }, ctx, info) {
+
+  async boxQuery(parent, { sender }, ctx, info) {
     const userId = getUserId(ctx)
-    return ctx.db.query.messages({
+    const response = await ctx.db.query.messages({
       where: {
         AND: [{ sender: { OR: [{ id_in: [sender, userId] }] } }, { target: { OR: [{ id_in: [sender, userId] }] } }]
       }
     }, info)
+    const senderList = response.filter(message => message.sender.id === sender)
+    const targetList = response.filter(message => message.sender.id !== sender)
+
+    const newList = senderList && senderList.concat(targetList)
+
+    const datedList = newList && newList.sort(function (a, b) {
+      if (a.createdAt > b.createdAt) {
+        return true
+      }
+      return datedList
+    })
+    return datedList
   },
 
-  // 1. make return a const
-  // 2. make target and sender list with filters
-  // 3. return new list using concat()
-  // 4. arrange new list by date
-  
   messageQuery(parent, args, ctx, info) {
     const userId = getUserId(ctx)
     return ctx.db.query.messages({ where: { OR: [{ sender: { id: userId } }, { target: { id: userId } }], } }, info)

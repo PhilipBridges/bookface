@@ -12,37 +12,18 @@ import 'tachyons'
 class FriendModal extends React.Component {
   state = {
     data: '',
-    datedList: null
   }
 
   modalOpen = async () => {
     const response = await client.query({
       query: BOX_QUERY,
       variables: { sender: this.props.friend.id },
+      fetchPolicy: 'network-only'
     })
-    this.setState({ data: response })
     return response
   }
 
   render() {
-
-    const messageList = this.state.data.data && !this.state.data.data.loading ? this.state.data.data.boxQuery : null
-    const senderList = messageList !== null && messageList.filter(message => message.sender.id === this.props.friend.id)
-    const targetList = messageList !== null && messageList.filter(message => message.sender.id !== this.props.friend.id)
-
-    const newList = senderList && senderList.concat(targetList)
-
-    const datedList = newList && newList.sort(function (a, b) {
-      if (a.createdAt > b.createdAt) {
-        return true
-      }
-      return datedList
-    })
-
-    if (datedList && this.state.datedList === null) {
-      this.setState({ datedList })
-    }
-
     return (
       <Modal
         closeOnDimmerClick={true}
@@ -54,9 +35,6 @@ class FriendModal extends React.Component {
         size='tiny'
       >
         <Header>{this.props.friend.name}</Header>
-
-        <div className="flex flex-column pb3 pt3">
-
 
           <Query query={BOX_QUERY} variables={{ sender: this.props.friend.id }}>
             {({ loading, data, subscribeToMore }) => {
@@ -70,24 +48,32 @@ class FriendModal extends React.Component {
                   if (!subscriptionData.data) return prev;
                   const message = subscriptionData.data.message.node;
                   const newList = prev.boxQuery.filter(msg => msg.id !== message.id)
-                    return {
-                      boxQuery: [...newList, message]
-                    }
+                  return {
+                    boxQuery: [...newList, message]
+                  }
                 }
               });
               return (
-                <div>
-                  {data && data.boxQuery.map(message => (
-                    <div key={message.id}>{message.text}</div>
-                  ))}
+                <div className="flex flex-column pb3 pt3">
+                  {data && data.boxQuery.map(message => {
+                    if (message.sender.id === this.props.friend.id) {
+                      return (
+                        <div style={{ float: 'left', paddingLeft: '1rem' }} key={message.id}>
+                          {message.text} <span style={{ fontSize: '.7rem' }}>@ {moment(message.createdAt).format('ddd, h:mm a')}</span>
+                        </div>
+                      )
+                    }
+                    return (
+                      <div style={{ float: 'right', marginLeft: 'auto', paddingRight: '1rem' }} key={message.id}>
+                        {message.text} <span style={{ fontSize: '.7rem' }}>@ {moment(message.createdAt).format('ddd, h:mm a')}</span>
+                      </div>
+                    )
+                  })}
                 </div>
               )
             }}
           </Query>
 
-
-
-        </div>
         <MessageBar target={this.props.friend.name} />
       </Modal>
     )
