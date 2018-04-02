@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Dropdown, Menu, Icon, } from 'semantic-ui-react'
+import Search from './Search'
 
 import 'tachyons'
 
@@ -17,17 +18,11 @@ class LeftBar extends Component {
       <Menu className='flex inverted vertical left fixed'>
         <Menu.Item>
           Home
-                <Icon name='dashboard' />
+              <Icon name='dashboard' />
           <Menu.Menu>
-            <Menu.Item name='search' active={activeItem === 'search'} onClick={this.handleItemClick}>
-              Search
-                      </Menu.Item>
-            <Menu.Item name='add' active={activeItem === 'add'} onClick={this.handleItemClick}>
-              Add
-                    </Menu.Item>
-            <Menu.Item name='about' active={activeItem === 'about'} onClick={this.handleItemClick}>
-              Remove
-                        </Menu.Item>
+            <Menu.Item>
+              <Search />
+            </Menu.Item>
           </Menu.Menu>
         </Menu.Item>
         <Menu.Item name='browse' active={activeItem === 'browse'} onClick={this.handleItemClick}>
@@ -41,8 +36,6 @@ class LeftBar extends Component {
         <Dropdown item text='More'>
           <Dropdown.Menu>
             <Dropdown.Item icon='edit' text='Edit Profile' />
-            <Dropdown.Item icon='globe' text='Choose Language' />
-            <Dropdown.Item icon='settings' text='Account Settings' />
           </Dropdown.Menu>
         </Dropdown>
       </Menu>
