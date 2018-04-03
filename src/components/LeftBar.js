@@ -18,7 +18,7 @@ class LeftBar extends Component {
     return (
       <Menu className='flex inverted vertical left fixed' style={{ maxWidth: '25%' }}>
         <Menu.Item>
-          Home
+          Bookface
         <Icon name='dashboard' />
         </Menu.Item>
         <Query query={USER_QUERY}>
