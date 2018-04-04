@@ -26,7 +26,8 @@ class Profile extends React.Component {
     this.setState({ friendClick: true })
     await this.props.friendMutation({
       variables: {
-        target: proId
+        target: proId,
+        text: "Hey! Be my friend!"
       }
     })
   }
@@ -68,11 +69,15 @@ class Profile extends React.Component {
               && me !== this.props.match.params.id
               &&
               <button disabled={this.state.friendClick}
-                onClick={() => this.addFriend(proId)}>{this.state.friendClick ? "Added!" : "Add as friend"}</button>}
+                onClick={() => this.addFriend(proId)}>{this.state.friendClick ? "Added!" : "Add as friend"}</button>
+            }
+
             {friendCheck !== undefined && me !== this.props.match.params.id
               &&
               <button disabled={this.state.friendClick}
-                onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>}
+                onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>
+              }
+
           </Card.Content>
           <div className="tc flex flex-column">
             {friendList.map(friend => <span key={friend.id}><Link to={`/profile/${friend.id}`}>{friend.name}</Link></span>)}
@@ -126,10 +131,8 @@ const FEED_QUERY = gql`
 `
 
 const FRIEND_MUTATION = gql`
-  mutation friendMutation($target: ID!){
-    addFriend(target: $target) {
-    id
-  }
+  mutation createRequest($target: ID!, $text: String){
+    createRequest(target: $target, text: $text)
 }
 `
 const UNFRIEND_MUTATION = gql`

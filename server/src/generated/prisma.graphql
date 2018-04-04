@@ -5,6 +5,14 @@
 # Model Types
 #
 
+type FriendRequest implements Node {
+  id: ID!
+  text: String!
+  sender(where: UserWhereInput): User!
+  target(where: UserWhereInput): User!
+  createdAt: DateTime!
+}
+
 type Message implements Node {
   id: ID!
   text: String!
@@ -31,6 +39,8 @@ type User implements Node {
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
   sentMessages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
   receivedMessages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+  sentRequests(where: FriendRequestWhereInput, orderBy: FriendRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FriendRequest!]
+  receivedRequests(where: FriendRequestWhereInput, orderBy: FriendRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FriendRequest!]
   friendList: [String!]
 }
 
@@ -38,6 +48,10 @@ type User implements Node {
 #
 # Other Types
 #
+
+type AggregateFriendRequest {
+  count: Int!
+}
 
 type AggregateMessage {
   count: Int!
@@ -59,6 +73,321 @@ type BatchPayload {
 }
 
 scalar DateTime
+
+"""
+A connection to a list of items.
+"""
+type FriendRequestConnection {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [FriendRequestEdge]!
+  aggregate: AggregateFriendRequest!
+}
+
+input FriendRequestCreateInput {
+  text: String!
+  sender: UserCreateOneWithoutSentRequestsInput!
+  target: UserCreateOneWithoutReceivedRequestsInput!
+}
+
+input FriendRequestCreateManyWithoutSenderInput {
+  create: [FriendRequestCreateWithoutSenderInput!]
+  connect: [FriendRequestWhereUniqueInput!]
+}
+
+input FriendRequestCreateManyWithoutTargetInput {
+  create: [FriendRequestCreateWithoutTargetInput!]
+  connect: [FriendRequestWhereUniqueInput!]
+}
+
+input FriendRequestCreateWithoutSenderInput {
+  text: String!
+  target: UserCreateOneWithoutReceivedRequestsInput!
+}
+
+input FriendRequestCreateWithoutTargetInput {
+  text: String!
+  sender: UserCreateOneWithoutSentRequestsInput!
+}
+
+"""
+An edge in a connection.
+"""
+type FriendRequestEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: FriendRequest!
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+}
+
+enum FriendRequestOrderByInput {
+  id_ASC
+  id_DESC
+  text_ASC
+  text_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type FriendRequestPreviousValues {
+  id: ID!
+  text: String!
+  createdAt: DateTime!
+}
+
+type FriendRequestSubscriptionPayload {
+  mutation: MutationType!
+  node: FriendRequest
+  updatedFields: [String!]
+  previousValues: FriendRequestPreviousValues
+}
+
+input FriendRequestSubscriptionWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [FriendRequestSubscriptionWhereInput!]
+  """
+  Logical OR on all given filters.
+  """
+  OR: [FriendRequestSubscriptionWhereInput!]
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: FriendRequestWhereInput
+}
+
+input FriendRequestUpdateInput {
+  text: String
+  sender: UserUpdateOneWithoutSentRequestsInput
+  target: UserUpdateOneWithoutReceivedRequestsInput
+}
+
+input FriendRequestUpdateManyWithoutSenderInput {
+  create: [FriendRequestCreateWithoutSenderInput!]
+  connect: [FriendRequestWhereUniqueInput!]
+  disconnect: [FriendRequestWhereUniqueInput!]
+  delete: [FriendRequestWhereUniqueInput!]
+  update: [FriendRequestUpdateWithWhereUniqueWithoutSenderInput!]
+  upsert: [FriendRequestUpsertWithWhereUniqueWithoutSenderInput!]
+}
+
+input FriendRequestUpdateManyWithoutTargetInput {
+  create: [FriendRequestCreateWithoutTargetInput!]
+  connect: [FriendRequestWhereUniqueInput!]
+  disconnect: [FriendRequestWhereUniqueInput!]
+  delete: [FriendRequestWhereUniqueInput!]
+  update: [FriendRequestUpdateWithWhereUniqueWithoutTargetInput!]
+  upsert: [FriendRequestUpsertWithWhereUniqueWithoutTargetInput!]
+}
+
+input FriendRequestUpdateWithoutSenderDataInput {
+  text: String
+  target: UserUpdateOneWithoutReceivedRequestsInput
+}
+
+input FriendRequestUpdateWithoutTargetDataInput {
+  text: String
+  sender: UserUpdateOneWithoutSentRequestsInput
+}
+
+input FriendRequestUpdateWithWhereUniqueWithoutSenderInput {
+  where: FriendRequestWhereUniqueInput!
+  data: FriendRequestUpdateWithoutSenderDataInput!
+}
+
+input FriendRequestUpdateWithWhereUniqueWithoutTargetInput {
+  where: FriendRequestWhereUniqueInput!
+  data: FriendRequestUpdateWithoutTargetDataInput!
+}
+
+input FriendRequestUpsertWithWhereUniqueWithoutSenderInput {
+  where: FriendRequestWhereUniqueInput!
+  update: FriendRequestUpdateWithoutSenderDataInput!
+  create: FriendRequestCreateWithoutSenderInput!
+}
+
+input FriendRequestUpsertWithWhereUniqueWithoutTargetInput {
+  where: FriendRequestWhereUniqueInput!
+  update: FriendRequestUpdateWithoutTargetDataInput!
+  create: FriendRequestCreateWithoutTargetInput!
+}
+
+input FriendRequestWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [FriendRequestWhereInput!]
+  """
+  Logical OR on all given filters.
+  """
+  OR: [FriendRequestWhereInput!]
+  id: ID
+  """
+  All values that are not equal to given value.
+  """
+  id_not: ID
+  """
+  All values that are contained in given list.
+  """
+  id_in: [ID!]
+  """
+  All values that are not contained in given list.
+  """
+  id_not_in: [ID!]
+  """
+  All values less than the given value.
+  """
+  id_lt: ID
+  """
+  All values less than or equal the given value.
+  """
+  id_lte: ID
+  """
+  All values greater than the given value.
+  """
+  id_gt: ID
+  """
+  All values greater than or equal the given value.
+  """
+  id_gte: ID
+  """
+  All values containing the given string.
+  """
+  id_contains: ID
+  """
+  All values not containing the given string.
+  """
+  id_not_contains: ID
+  """
+  All values starting with the given string.
+  """
+  id_starts_with: ID
+  """
+  All values not starting with the given string.
+  """
+  id_not_starts_with: ID
+  """
+  All values ending with the given string.
+  """
+  id_ends_with: ID
+  """
+  All values not ending with the given string.
+  """
+  id_not_ends_with: ID
+  text: String
+  """
+  All values that are not equal to given value.
+  """
+  text_not: String
+  """
+  All values that are contained in given list.
+  """
+  text_in: [String!]
+  """
+  All values that are not contained in given list.
+  """
+  text_not_in: [String!]
+  """
+  All values less than the given value.
+  """
+  text_lt: String
+  """
+  All values less than or equal the given value.
+  """
+  text_lte: String
+  """
+  All values greater than the given value.
+  """
+  text_gt: String
+  """
+  All values greater than or equal the given value.
+  """
+  text_gte: String
+  """
+  All values containing the given string.
+  """
+  text_contains: String
+  """
+  All values not containing the given string.
+  """
+  text_not_contains: String
+  """
+  All values starting with the given string.
+  """
+  text_starts_with: String
+  """
+  All values not starting with the given string.
+  """
+  text_not_starts_with: String
+  """
+  All values ending with the given string.
+  """
+  text_ends_with: String
+  """
+  All values not ending with the given string.
+  """
+  text_not_ends_with: String
+  createdAt: DateTime
+  """
+  All values that are not equal to given value.
+  """
+  createdAt_not: DateTime
+  """
+  All values that are contained in given list.
+  """
+  createdAt_in: [DateTime!]
+  """
+  All values that are not contained in given list.
+  """
+  createdAt_not_in: [DateTime!]
+  """
+  All values less than the given value.
+  """
+  createdAt_lt: DateTime
+  """
+  All values less than or equal the given value.
+  """
+  createdAt_lte: DateTime
+  """
+  All values greater than the given value.
+  """
+  createdAt_gt: DateTime
+  """
+  All values greater than or equal the given value.
+  """
+  createdAt_gte: DateTime
+  sender: UserWhereInput
+  target: UserWhereInput
+}
+
+input FriendRequestWhereUniqueInput {
+  id: ID
+}
 
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
@@ -385,21 +714,27 @@ type Mutation {
   createPost(data: PostCreateInput!): Post!
   createUser(data: UserCreateInput!): User!
   createMessage(data: MessageCreateInput!): Message!
+  createFriendRequest(data: FriendRequestCreateInput!): FriendRequest!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateMessage(data: MessageUpdateInput!, where: MessageWhereUniqueInput!): Message
+  updateFriendRequest(data: FriendRequestUpdateInput!, where: FriendRequestWhereUniqueInput!): FriendRequest
   deletePost(where: PostWhereUniqueInput!): Post
   deleteUser(where: UserWhereUniqueInput!): User
   deleteMessage(where: MessageWhereUniqueInput!): Message
+  deleteFriendRequest(where: FriendRequestWhereUniqueInput!): FriendRequest
   upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertMessage(where: MessageWhereUniqueInput!, create: MessageCreateInput!, update: MessageUpdateInput!): Message!
+  upsertFriendRequest(where: FriendRequestWhereUniqueInput!, create: FriendRequestCreateInput!, update: FriendRequestUpdateInput!): FriendRequest!
   updateManyPosts(data: PostUpdateInput!, where: PostWhereInput!): BatchPayload!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput!): BatchPayload!
   updateManyMessages(data: MessageUpdateInput!, where: MessageWhereInput!): BatchPayload!
+  updateManyFriendRequests(data: FriendRequestUpdateInput!, where: FriendRequestWhereInput!): BatchPayload!
   deleteManyPosts(where: PostWhereInput!): BatchPayload!
   deleteManyUsers(where: UserWhereInput!): BatchPayload!
   deleteManyMessages(where: MessageWhereInput!): BatchPayload!
+  deleteManyFriendRequests(where: FriendRequestWhereInput!): BatchPayload!
 }
 
 enum MutationType {
@@ -869,12 +1204,15 @@ type Query {
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message]!
+  friendRequests(where: FriendRequestWhereInput, orderBy: FriendRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FriendRequest]!
   post(where: PostWhereUniqueInput!): Post
   user(where: UserWhereUniqueInput!): User
   message(where: MessageWhereUniqueInput!): Message
+  friendRequest(where: FriendRequestWhereUniqueInput!): FriendRequest
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   messagesConnection(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MessageConnection!
+  friendRequestsConnection(where: FriendRequestWhereInput, orderBy: FriendRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FriendRequestConnection!
   """
   Fetches an object given its ID
   """
@@ -888,6 +1226,7 @@ type Subscription {
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   message(where: MessageSubscriptionWhereInput): MessageSubscriptionPayload
+  friendRequest(where: FriendRequestSubscriptionWhereInput): FriendRequestSubscriptionPayload
 }
 
 """
@@ -917,6 +1256,8 @@ input UserCreateInput {
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
   receivedMessages: MessageCreateManyWithoutTargetInput
+  sentRequests: FriendRequestCreateManyWithoutSenderInput
+  receivedRequests: FriendRequestCreateManyWithoutTargetInput
 }
 
 input UserCreateOneWithoutPostsInput {
@@ -929,8 +1270,18 @@ input UserCreateOneWithoutReceivedMessagesInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateOneWithoutReceivedRequestsInput {
+  create: UserCreateWithoutReceivedRequestsInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreateOneWithoutSentMessagesInput {
   create: UserCreateWithoutSentMessagesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutSentRequestsInput {
+  create: UserCreateWithoutSentRequestsInput
   connect: UserWhereUniqueInput
 }
 
@@ -941,6 +1292,8 @@ input UserCreateWithoutPostsInput {
   friendList: UserCreatefriendListInput
   sentMessages: MessageCreateManyWithoutSenderInput
   receivedMessages: MessageCreateManyWithoutTargetInput
+  sentRequests: FriendRequestCreateManyWithoutSenderInput
+  receivedRequests: FriendRequestCreateManyWithoutTargetInput
 }
 
 input UserCreateWithoutReceivedMessagesInput {
@@ -950,6 +1303,19 @@ input UserCreateWithoutReceivedMessagesInput {
   friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
+  sentRequests: FriendRequestCreateManyWithoutSenderInput
+  receivedRequests: FriendRequestCreateManyWithoutTargetInput
+}
+
+input UserCreateWithoutReceivedRequestsInput {
+  email: String!
+  password: String!
+  name: String!
+  friendList: UserCreatefriendListInput
+  posts: PostCreateManyWithoutAuthorInput
+  sentMessages: MessageCreateManyWithoutSenderInput
+  receivedMessages: MessageCreateManyWithoutTargetInput
+  sentRequests: FriendRequestCreateManyWithoutSenderInput
 }
 
 input UserCreateWithoutSentMessagesInput {
@@ -959,6 +1325,19 @@ input UserCreateWithoutSentMessagesInput {
   friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   receivedMessages: MessageCreateManyWithoutTargetInput
+  sentRequests: FriendRequestCreateManyWithoutSenderInput
+  receivedRequests: FriendRequestCreateManyWithoutTargetInput
+}
+
+input UserCreateWithoutSentRequestsInput {
+  email: String!
+  password: String!
+  name: String!
+  friendList: UserCreatefriendListInput
+  posts: PostCreateManyWithoutAuthorInput
+  sentMessages: MessageCreateManyWithoutSenderInput
+  receivedMessages: MessageCreateManyWithoutTargetInput
+  receivedRequests: FriendRequestCreateManyWithoutTargetInput
 }
 
 """
@@ -1045,6 +1424,8 @@ input UserUpdateInput {
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
+  sentRequests: FriendRequestUpdateManyWithoutSenderInput
+  receivedRequests: FriendRequestUpdateManyWithoutTargetInput
 }
 
 input UserUpdateOneWithoutPostsInput {
@@ -1064,12 +1445,28 @@ input UserUpdateOneWithoutReceivedMessagesInput {
   upsert: UserUpsertWithoutReceivedMessagesInput
 }
 
+input UserUpdateOneWithoutReceivedRequestsInput {
+  create: UserCreateWithoutReceivedRequestsInput
+  connect: UserWhereUniqueInput
+  delete: Boolean
+  update: UserUpdateWithoutReceivedRequestsDataInput
+  upsert: UserUpsertWithoutReceivedRequestsInput
+}
+
 input UserUpdateOneWithoutSentMessagesInput {
   create: UserCreateWithoutSentMessagesInput
   connect: UserWhereUniqueInput
   delete: Boolean
   update: UserUpdateWithoutSentMessagesDataInput
   upsert: UserUpsertWithoutSentMessagesInput
+}
+
+input UserUpdateOneWithoutSentRequestsInput {
+  create: UserCreateWithoutSentRequestsInput
+  connect: UserWhereUniqueInput
+  delete: Boolean
+  update: UserUpdateWithoutSentRequestsDataInput
+  upsert: UserUpsertWithoutSentRequestsInput
 }
 
 input UserUpdateWithoutPostsDataInput {
@@ -1079,6 +1476,8 @@ input UserUpdateWithoutPostsDataInput {
   friendList: UserUpdatefriendListInput
   sentMessages: MessageUpdateManyWithoutSenderInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
+  sentRequests: FriendRequestUpdateManyWithoutSenderInput
+  receivedRequests: FriendRequestUpdateManyWithoutTargetInput
 }
 
 input UserUpdateWithoutReceivedMessagesDataInput {
@@ -1088,6 +1487,19 @@ input UserUpdateWithoutReceivedMessagesDataInput {
   friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
+  sentRequests: FriendRequestUpdateManyWithoutSenderInput
+  receivedRequests: FriendRequestUpdateManyWithoutTargetInput
+}
+
+input UserUpdateWithoutReceivedRequestsDataInput {
+  email: String
+  password: String
+  name: String
+  friendList: UserUpdatefriendListInput
+  posts: PostUpdateManyWithoutAuthorInput
+  sentMessages: MessageUpdateManyWithoutSenderInput
+  receivedMessages: MessageUpdateManyWithoutTargetInput
+  sentRequests: FriendRequestUpdateManyWithoutSenderInput
 }
 
 input UserUpdateWithoutSentMessagesDataInput {
@@ -1097,6 +1509,19 @@ input UserUpdateWithoutSentMessagesDataInput {
   friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
+  sentRequests: FriendRequestUpdateManyWithoutSenderInput
+  receivedRequests: FriendRequestUpdateManyWithoutTargetInput
+}
+
+input UserUpdateWithoutSentRequestsDataInput {
+  email: String
+  password: String
+  name: String
+  friendList: UserUpdatefriendListInput
+  posts: PostUpdateManyWithoutAuthorInput
+  sentMessages: MessageUpdateManyWithoutSenderInput
+  receivedMessages: MessageUpdateManyWithoutTargetInput
+  receivedRequests: FriendRequestUpdateManyWithoutTargetInput
 }
 
 input UserUpsertWithoutPostsInput {
@@ -1109,9 +1534,19 @@ input UserUpsertWithoutReceivedMessagesInput {
   create: UserCreateWithoutReceivedMessagesInput!
 }
 
+input UserUpsertWithoutReceivedRequestsInput {
+  update: UserUpdateWithoutReceivedRequestsDataInput!
+  create: UserCreateWithoutReceivedRequestsInput!
+}
+
 input UserUpsertWithoutSentMessagesInput {
   update: UserUpdateWithoutSentMessagesDataInput!
   create: UserCreateWithoutSentMessagesInput!
+}
+
+input UserUpsertWithoutSentRequestsInput {
+  update: UserUpdateWithoutSentRequestsDataInput!
+  create: UserCreateWithoutSentRequestsInput!
 }
 
 input UserWhereInput {
@@ -1344,6 +1779,12 @@ input UserWhereInput {
   receivedMessages_every: MessageWhereInput
   receivedMessages_some: MessageWhereInput
   receivedMessages_none: MessageWhereInput
+  sentRequests_every: FriendRequestWhereInput
+  sentRequests_some: FriendRequestWhereInput
+  sentRequests_none: FriendRequestWhereInput
+  receivedRequests_every: FriendRequestWhereInput
+  receivedRequests_some: FriendRequestWhereInput
+  receivedRequests_none: FriendRequestWhereInput
 }
 
 input UserWhereUniqueInput {

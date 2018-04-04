@@ -85,6 +85,9 @@ const Query = {
       return { id: currUser.id, name: currUser.name }
     })
     return newList
+  },
+  requestQuery(parent, args, ctx, info) {
+    return ctx.db.query.friendRequests({ where: { id_not: null }}, info)
   }
 
 }

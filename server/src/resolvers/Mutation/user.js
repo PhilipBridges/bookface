@@ -1,6 +1,57 @@
 const { getUserId } = require('../../utils')
 
 const user = {
+  async createRequest(parent, { target, text }, ctx, info) {
+    const userId = getUserId(ctx)
+    if (target == null) {
+      return false
+    }
+
+    const dupeCheck = await ctx.db.query.friendRequests({
+      where: { AND: [{ target: { id: target } }, { sender: { id: userId } }] }
+    },
+      `{
+        id
+        target {
+          id
+        }
+        sender {
+          id
+        }
+      }`
+    )
+    if (dupeCheck.length >= 1) {
+      return false
+    }
+
+    const response = await ctx.db.mutation.createFriendRequest({
+      data: {
+        sender: { connect: { id: userId } },
+        target: { connect: { id: target } },
+        text
+      }
+    })
+    return response
+  },
+  async deleteRequest(parent, { id }, ctx, info) {
+    const userId = getUserId(ctx)
+    const response = await ctx.db.mutation.deleteFriendRequest({
+      where: { id }
+    }, info)
+
+    if (response !== null) {
+      return true
+    }
+    return false
+  },
+  async deleteRequests(parent, args, ctx, info) {
+    const response = await ctx.db.mutation.deleteManyFriendRequests({ where: { id_not: null } }, info)
+
+    if (response !== null) {
+      return { count: 0 }
+    }
+    return { count: 0 }
+  },
   async addFriend(parent, { target }, ctx, info) {
     const userId = getUserId(ctx)
 

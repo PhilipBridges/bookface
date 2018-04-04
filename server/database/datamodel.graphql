@@ -16,6 +16,8 @@ type User {
   posts: [Post!]!
   sentMessages: [Message!]! @relation(name: "Messenger")
   receivedMessages: [Message!]! @relation(name: "Receiver")
+  sentRequests: [FriendRequest!]! @relation(name: "Friender")
+  receivedRequests: [FriendRequest!]! @relation(name: "Friendee")
   friendList: [String!]!
 }
 
@@ -24,5 +26,13 @@ type Message {
   text: String!
   sender: User! @relation(name: "Messenger")
   target: User! @relation(name: "Receiver")
+  createdAt: DateTime!
+}
+
+type FriendRequest {
+  id: ID! @unique
+  text: String!
+  sender: User! @relation(name: "Friender")
+  target: User! @relation(name: "Friendee")
   createdAt: DateTime!
 }

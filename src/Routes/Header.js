@@ -9,7 +9,7 @@ import 'semantic-ui-css/semantic.min.css';
 import 'tachyons'
 import '../index.css'
 
-import { Menu } from 'semantic-ui-react'
+import { Menu, Icon } from 'semantic-ui-react'
 
 class Header extends React.Component {
   constructor(props) {
@@ -52,7 +52,7 @@ class Header extends React.Component {
     }
 
     return (
-      <Menu fixed='top' style={{paddingLeft: "15rem"}} inverted pointing>
+      <Menu fixed='top' style={{ paddingLeft: "15rem" }} inverted pointing>
         <Menu.Item name='feed' active={activeItem === 'feed'} onClick={this.handleItemClick}>Feed</Menu.Item>
         {authed
           ?
@@ -60,6 +60,9 @@ class Header extends React.Component {
             <Menu.Item name='inbox' active={activeItem === 'inbox'} onClick={this.handleItemClick} />
             <Menu.Item id={this.state.user.id} name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick}>
               Profile ({this.state.user.name})
+            </Menu.Item>
+            <Menu.Item>
+              <Icon name='alarm' />
             </Menu.Item>
             <Menu.Item name='logout' active={activeItem === 'logout'} onClick={this.logout} />
           </React.Fragment>
