@@ -52,7 +52,8 @@ const user = {
     }
     return { count: 0 }
   },
-  async addFriend(parent, { target }, ctx, info) {
+  async addFriend(parent, { target, request }, ctx, info) {
+    console.log('REK', request)
     const userId = getUserId(ctx)
 
     if (target == null) {
@@ -85,6 +86,8 @@ const user = {
     })
 
     const friendList = getUser.friendList
+
+    await ctx.db.mutation.deleteFriendRequest({ where: { id: request } }, info)
 
     return ctx.db.mutation.updateUser({
       where: { id: userId },

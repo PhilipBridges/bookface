@@ -12,7 +12,7 @@ const Query = {
         friendList
       }`
     )
-    return ctx.db.query.posts({ where: { OR: { author: { id_in: getUser.friendList }, author: { id: userId } } } }, info);
+    return ctx.db.query.posts({ where: { OR: [{ author: { id_in: getUser.friendList } }, { author: { id: userId } }], } }, info)
   },
 
   post(parent, { id }, ctx, info) {
@@ -87,7 +87,8 @@ const Query = {
     return newList
   },
   requestQuery(parent, args, ctx, info) {
-    return ctx.db.query.friendRequests({ where: { id_not: null }}, info)
+    const userId = getUserId(ctx)
+    return ctx.db.query.friendRequests({ where: { target: { id: userId } }}, info)
   }
 
 }

@@ -28,7 +28,7 @@ type Mutation {
   createRequest(target: ID!, text: String): Boolean
   deleteRequest(id: ID!): Boolean
   deleteRequests: BatchPayload!
-  addFriend(target: ID!): User
+  addFriend(target: ID!, request: ID!): User
   deleteFriend(target: ID!): User
 }
 

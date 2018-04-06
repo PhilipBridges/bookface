@@ -9,14 +9,15 @@ import 'semantic-ui-css/semantic.min.css';
 import 'tachyons'
 import '../index.css'
 
-import { Menu, Icon } from 'semantic-ui-react'
+import { Menu, Button, Dropdown } from 'semantic-ui-react'
 
 class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       activeItem: 'feed',
-      user: {}
+      user: {},
+      confirmDisable: false
     }
   }
 
@@ -35,6 +36,19 @@ class Header extends React.Component {
     await localStorage.removeItem("token")
     window.location.reload();
   };
+
+  confirmFriend = async (props) => {
+    const { requestId, senderId } = props
+    this.setState({ confirmDisable: true })
+    await this.props.confirmMutation({
+      variables: {
+        target: senderId,
+        request: requestId
+      }
+    })
+    await this.props.requestQuery.refetch()
+    this.setState({ confirmDisable: false })
+  }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location.key !== nextProps.location.key
@@ -61,9 +75,20 @@ class Header extends React.Component {
             <Menu.Item id={this.state.user.id} name='profile' active={activeItem === 'profile'} onClick={this.handleItemClick}>
               Profile ({this.state.user.name})
             </Menu.Item>
-            <Menu.Item>
-              <Icon name='alarm' />
-            </Menu.Item>
+            <Dropdown item icon='alarm'>
+              <Dropdown.Menu style={{ paddingRight: '5rem' }}>
+                {this.props.requestQuery && !this.props.requestQuery.loading && this.props.requestQuery.requestQuery.length > 0 ? this.props.requestQuery.requestQuery.map(request => (
+                  <Dropdown.Item key={request.id} style={{ display: 'flex' }}>
+                    <img alt='avatar' src={'/avatar.png'} />
+                    <span>{request.sender.name}: {request.text}</span>
+                    <Button disabled={this.state.confirmDisable} onClick={() => this.confirmFriend({ requestId: request.id, senderId: request.sender.id })}>Confirm</Button>
+                  </Dropdown.Item>
+                ))
+                  :
+                  <Dropdown.Item text='No notifications' />
+                }
+              </Dropdown.Menu>
+            </Dropdown>
             <Menu.Item name='logout' active={activeItem === 'logout'} onClick={this.logout} />
           </React.Fragment>
           :
@@ -87,11 +112,45 @@ const ME_QUERY = gql`
   }
 `
 
+const REQUEST_QUERY = gql`
+  query {
+  requestQuery{
+    id
+    text
+    sender {
+      name
+      id
+    }
+    target {
+      name
+      id
+    }
+  }
+}`
+
+const CONFIRM_MUTATION = gql`
+  mutation addFriend($target: ID!, $request: ID!){
+    addFriend(target: $target, request: $request) {
+      id
+      name
+    }
+}
+`
+
 export default compose(
   graphql(ME_QUERY, {
     name: "meQuery",
     options: {
       fetchPolicy: "cache-and-network",
-    },
+    }
+  }),
+  graphql(CONFIRM_MUTATION, {
+    name: 'confirmMutation',
+  }),
+  graphql(REQUEST_QUERY, {
+    name: 'requestQuery',
+    options: {
+      fetchPolicy: 'network-only'
+    }
   }),
   withRouter)(Header)
