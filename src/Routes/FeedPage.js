@@ -25,7 +25,7 @@ class FeedPage extends React.Component {
     }
 
     return (
-      <React.Fragment>
+      <React.Fragment >
         {this.props.feedQuery.allFeed &&
           this.props.feedQuery.allFeed.map(post => (
             <Post

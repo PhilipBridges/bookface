@@ -17,6 +17,7 @@ import LeftBar from '../components/LeftBar'
 import FriendBar from '../components/FriendBar'
 
 import PrivateRoute from './PrivateRoute'
+import FeedRoute from './FeedRoute'
 import Header from './Header'
 import decode from 'jwt-decode'
 
@@ -49,7 +50,7 @@ export default () =>
             )
         )} />
         <Route exact path="/" render={() => <Redirect to='/feed' />} />
-        <PrivateRoute exact path="/feed" component={FeedPage} />
+        <FeedRoute exact path="/feed" component={FeedPage} />
         <PrivateRoute path="/create" component={CreatePage} />
         <PrivateRoute path="/inbox" component={Inbox} />
         <PrivateRoute path="/post/:id" component={DetailPage} />

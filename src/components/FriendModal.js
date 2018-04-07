@@ -3,6 +3,7 @@ import { Button, Modal, Header } from 'semantic-ui-react'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { Query } from 'react-apollo'
+import { Link } from 'react-router-dom'
 
 import MessageBar from './MessageBar'
 import client from '../apollo'
@@ -34,7 +35,9 @@ class FriendModal extends React.Component {
         trigger={<Button size='tiny'>{this.props.friend.name}</Button>}
         size='tiny'
       >
-        <Header>{this.props.friend.name}</Header>
+        <Header>
+          <Link to={`/profile/${this.props.friend.id}`}>{this.props.friend.name}</Link>
+        </Header>
 
         <Query query={BOX_QUERY} variables={{ sender: this.props.friend.id }}>
           {({ loading, data, subscribeToMore }) => {

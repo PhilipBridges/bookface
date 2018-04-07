@@ -25,6 +25,7 @@ const Query = {
       return ctx.db.query.user({ where: { id } }, info)
     }
   },
+  
   userQuery(parent, args, ctx, info) {
     return ctx.db.query.users(info)
   },

@@ -7,7 +7,7 @@ import Post from '../components/Post'
 import Loading from '../components/Loading'
 import CreatePageWithMutation from './CreatePage'
 
-import { Card, Image, Comment } from 'semantic-ui-react'
+import { Card, Image, Comment, Grid } from 'semantic-ui-react'
 
 import 'tachyons'
 
@@ -76,11 +76,20 @@ class Profile extends React.Component {
               &&
               <button disabled={this.state.friendClick}
                 onClick={() => this.removeFriend(proId)}>{this.state.friendClick ? "Unfriended :(" : "Unfriend"}</button>
-              }
+            }
 
           </Card.Content>
           <div className="tc flex flex-column">
-            {friendList.map(friend => <span key={friend.id}><Link to={`/profile/${friend.id}`}>{friend.name}</Link></span>)}
+            <Grid container columns={3}>
+              {friendList.map(friend =>
+                <Grid.Column key={friend.id}>
+                  <Link to={`/profile/${friend.id}`}>
+                    <Image src='/avatar.png' />
+                    {friend.name}
+                  </Link>
+                </Grid.Column>
+              )}
+            </Grid>
           </div>
         </Card>
         <div className="ml5">
