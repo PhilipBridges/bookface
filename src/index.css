@@ -64,3 +64,20 @@ html {
   width: 20px;
   height: 20px;
 }
+
+@media only screen and (max-width: 700px) {
+  .navbar {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0px !important;
+  }
+  .logo {
+    justify-content: flex-end;
+  }
+}
+
+@media only screen and (max-width: 700px){
+  .sidemenu {
+    display: none
+  }
+}

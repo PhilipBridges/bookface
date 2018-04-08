@@ -6,6 +6,7 @@ import gql from 'graphql-tag'
 import MessageForm from '../components/MessageForm'
 import Loading from '../components/Loading'
 
+import { Button } from 'semantic-ui-react'
 import 'tachyons'
 
 class Inbox extends React.Component {
@@ -82,12 +83,12 @@ class Inbox extends React.Component {
     return (
       <React.Fragment>
         <h1>Profile ({user.name})</h1>
-        <button disabled={this.state.count === 0 || this.state.disablePage} onClick={() => this.onFetchBack()}>
+        <Button secondary disabled={this.state.count === 0 || this.state.disablePage} onClick={() => this.onFetchBack()}>
           back
-        </button>
-        <button disabled={messages.length < 10 || this.state.disablePage} onClick={() => this.onFetchMore()}>
+        </Button>
+        <Button secondary disabled={messages.length < 10 || this.state.disablePage} onClick={() => this.onFetchMore()}>
           next
-          </button>
+          </Button>
         <div className="flex w-75">
           <div className="flex flex-column w-100">
             {messages &&

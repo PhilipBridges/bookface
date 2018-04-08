@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Menu, Icon, } from 'semantic-ui-react'
+import { Menu, Icon, Responsive} from 'semantic-ui-react'
 import Search from './Search'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withRouter } from 'react-router-dom'
+
+import '../index.css'
 
 import 'tachyons'
 
@@ -16,10 +18,9 @@ class LeftBar extends Component {
   render() {
 
     return (
-      <Menu className='flex inverted vertical left fixed' style={{ maxWidth: '25%' }}>
-        <Menu.Item>
-          Bookface
-        <Icon name='dashboard' />
+      <Responsive as={Menu} minWidth={700} className='flex inverted vertical left fixed' style={{ maxWidth: '25%' }}>
+        <Menu.Item style={{display: 'flex'}} className='logo'>
+          <Icon  name='spy' /> Bookface
         </Menu.Item>
         <Query query={USER_QUERY}>
           {({ loading, data }) => {
@@ -35,7 +36,6 @@ class LeftBar extends Component {
                 items={newList}
                 onChange={(selectedItem) => {
                   const target = data.userQuery.filter(user => user.name === selectedItem)
-                  console.log(target)
                   target && this.props.history.push(`/profile/${target[0].id}`)
                 }}
                 history={this.props.history}
@@ -44,7 +44,10 @@ class LeftBar extends Component {
             )
           }}
         </Query>
-      </Menu>
+        <Menu.Item>
+          
+        </Menu.Item>
+      </Responsive>
     )
   }
 }

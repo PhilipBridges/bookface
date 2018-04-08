@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import moment from 'moment'
 
 
-import { Comment, Divider } from 'semantic-ui-react'
+import { Comment, Divider, Button } from 'semantic-ui-react'
 
 const _deleteMessage = async (props) => {
   await props.deleteMessage({
@@ -24,7 +24,7 @@ const Message = (props) =>
       </Comment.Metadata>
       <Comment.Text>{props.message.text}</Comment.Text>
     </Comment.Content>
-    <button onClick={() => _deleteMessage(props)}>Delete</button>
+    <Button onClick={() => _deleteMessage(props)}>Delete</Button>
     <Divider />
   </Comment>
 

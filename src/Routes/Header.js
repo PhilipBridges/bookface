@@ -9,7 +9,7 @@ import 'semantic-ui-css/semantic.min.css';
 import 'tachyons'
 import '../index.css'
 
-import { Menu, Button, Dropdown } from 'semantic-ui-react'
+import { Menu, Button, Dropdown, Responsive } from 'semantic-ui-react'
 
 class Header extends React.Component {
   constructor(props) {
@@ -17,8 +17,19 @@ class Header extends React.Component {
     this.state = {
       activeItem: 'feed',
       user: {},
-      confirmDisable: false
+      confirmDisable: false,
+      position: 'top'
     }
+  }
+
+  handleOnUpdate = (e, { width }) => {
+    if (width <= 700) {
+      this.setState({ position: 'left' })
+    }
+    if (width >= 700) {
+      this.setState({ position: 'top' })
+    }
+    console.log(this.state.position)
   }
 
   handleItemClick = (e, { name, id }) => this.setState({ activeItem: name },
@@ -66,7 +77,7 @@ class Header extends React.Component {
     }
 
     return (
-      <Menu fixed='top' style={{ paddingLeft: "15rem" }} inverted pointing>
+      <Responsive onUpdate={this.handleOnUpdate} as={Menu} className="navbar" fixed={this.state.position} style={{ paddingLeft: "15rem" }} inverted pointing>
         <Menu.Item name='feed' active={activeItem === 'feed'} onClick={this.handleItemClick}>Feed</Menu.Item>
         {authed
           ?
@@ -97,7 +108,7 @@ class Header extends React.Component {
             <Menu.Item name='login' active={activeItem === 'login'} onClick={this.handleItemClick} />
           </React.Fragment>
         }
-      </Menu>
+      </Responsive>
     )
   }
 }
