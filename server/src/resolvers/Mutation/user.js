@@ -53,7 +53,6 @@ const user = {
     return { count: 0 }
   },
   async addFriend(parent, { target, request }, ctx, info) {
-    console.log('REK', request)
     const userId = getUserId(ctx)
 
     if (target == null) {

@@ -29,7 +29,6 @@ class Header extends React.Component {
     if (width >= 700) {
       this.setState({ position: 'top' })
     }
-    console.log(this.state.position)
   }
 
   handleItemClick = (e, { name, id }) => this.setState({ activeItem: name },

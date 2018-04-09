@@ -50,8 +50,6 @@ class Inbox extends React.Component {
       variables: { last: 10, before },
       updateQuery: (previousResult, { fetchMoreResult, queryVariables }) => {
         return {
-          ...previousResult,
-          // Add the new matches data to the end of the old matches data.
           messageQuery: [
             ...fetchMoreResult.messageQuery,
           ],
