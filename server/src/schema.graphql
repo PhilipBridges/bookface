@@ -2,7 +2,7 @@
 
 type Query {
   feed(wallId: ID, orderBy: MessageOrderByInput): [Post!]!
-  allFeed(orderBy: MessageOrderByInput): [Post!]!
+  allFeed(orderBy: PostOrderByInput, first: Int, last: Int, before: String, after: String): [Post!]!
   post(id: ID!, wallId: ID): Post!
   me: User
   userQuery: [User!]
