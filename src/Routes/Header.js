@@ -60,20 +60,19 @@ class Header extends React.Component {
     this.setState({ confirmDisable: false })
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (this.props.location.key !== nextProps.location.key
       && this.props.meQuery && !this.props.meQuery.loading) {
       this.props.meQuery.refetch()
+    }
+    if (this.props.meQuery && !this.props.meQuery.loading && this.state.user && !this.state.user.name) {
+      this.setState({ user: this.props.meQuery.me })
     }
   }
 
   render() {
     const authed = localStorage.getItem("token")
     const { activeItem } = this.state
-
-    if (this.props.meQuery && !this.props.meQuery.loading && this.state.user && !this.state.user.name) {
-      this.setState({ user: this.props.meQuery.me })
-    }
 
     return (
       <Responsive onUpdate={this.handleOnUpdate} as={Menu} className="navbar" fixed={this.state.position} style={{ paddingLeft: "15rem" }} inverted pointing>

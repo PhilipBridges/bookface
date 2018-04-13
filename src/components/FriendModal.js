@@ -26,6 +26,7 @@ class FriendModal extends React.Component {
       variables: { sender: this.props.friend.id },
       fetchPolicy: 'network-only'
     })
+    await this.refs.query.refs.scrollbar.scrollToBottom()
     return response
   }
 
@@ -44,7 +45,8 @@ class FriendModal extends React.Component {
           <Link to={`/profile/${this.props.friend.id}`}>{this.props.friend.name}</Link>
         </Header>
 
-        <Query query={BOX_QUERY} variables={{ sender: this.props.friend.id, first: 10, before: undefined }}>
+        <Query ref='query' query={BOX_QUERY} variables={{ sender: this.props.friend.id, first: 10, before: undefined }}
+        >
           {({ loading, data, subscribeToMore, fetchMore }) => {
             if (loading) {
               return null;
@@ -58,7 +60,6 @@ class FriendModal extends React.Component {
                   query: BOX_QUERY,
                   variables: { last: 10, after: before, sender: this.props.friend.id },
                   updateQuery: (previousResult, { fetchMoreResult, queryVariables }) => {
-
                     if ([...fetchMoreResult.boxQuery].length >= 1) {
                       this.setState({ last: fetchMoreResult.boxQuery[0].id })
                       const response = {
@@ -95,13 +96,16 @@ class FriendModal extends React.Component {
             });
             return (
               <Scrollbars
+                ref='scrollbar'
                 onScrollFrame={(values) => {
-                  if (values.top === 0) onFetchMore(values)
+                  if (values.top === 0) {
+                    onFetchMore(values)
+                  }
                 }}
                 style={{ width: undefined, height: 200 }}>
                 <div className="flex flex-column pb3 pt3">
-                  <Icon style={{ paddingLeft: '50%' }} name='chevron up' />
 
+                  <Icon style={{ paddingLeft: '50%' }} name='chevron up' />
 
                   {data && data.boxQuery.map(message => {
                     if (message.sender.id === this.props.friend.id) {
@@ -117,14 +121,11 @@ class FriendModal extends React.Component {
                       </div>
                     )
                   })}
-
                 </div>
               </Scrollbars>
             )
           }}
-
         </Query>
-
         <MessageBar target={this.props.friend.name} />
       </Modal>
     )
