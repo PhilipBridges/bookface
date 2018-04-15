@@ -2,7 +2,7 @@ const { getUserId } = require('../utils')
 
 const Query = {
   feed(parent, args, ctx, info) {
-    return ctx.db.query.posts({ OR: { where: { wallId: args.wallId }, } }, info);
+    return ctx.db.query.posts({ where: { wallId: args.wallId } }, info);
   },
   async allFeed(parent, args, ctx, info) {
     const userId = getUserId(ctx)
