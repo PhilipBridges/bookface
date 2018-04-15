@@ -6,7 +6,7 @@ import { split } from 'apollo-link';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
-require('dotenv').config()
+require('dotenv').config({path: './.prod.env'})
 
 const httpLink = new HttpLink({ uri: process.env.REACT_APP_URI })
 

@@ -4,7 +4,7 @@ const CORS = require('micro-cors')({ allowHeaders: ['X-Requested-With', 'Access-
 const { Prisma } = require('prisma-binding')
 const resolvers = require('./resolvers')
 
-require('dotenv').config({path: '../.env'})
+require('dotenv').config({path: '../prod.env'})
 
 const server = new GraphQLServer({
   typeDefs: "./src/schema.graphql",
