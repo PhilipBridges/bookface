@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import Loading from '../components/Loading'
 
 import 'tachyons'
-import { Button, Icon } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
 
 class FeedPage extends React.Component {
   state = {
@@ -21,24 +21,23 @@ class FeedPage extends React.Component {
   }
 
   onFetchMore = () => {
-    const { fetchMore } = this.props.feedQuery;
-    const feedQuery = this.props.feedQuery.allFeed
-    const after = feedQuery[feedQuery.length - 1].id.toString()
+      const { fetchMore } = this.props.feedQuery;
+      const feedQuery = this.props.feedQuery.allFeed
+      const after = feedQuery[feedQuery.length - 1].id.toString()
+      setTimeout(this.setState({ disablePage: true }), 500)
 
-    setTimeout(this.setState({ disablePage: true }), 500)
-
-    this.setState({ count: this.state.count + 1 })
-    fetchMore({
-      query: FEED_QUERY,
-      variables: { first: 5, after },
-      updateQuery: (previousResult, { fetchMoreResult, queryVariables }) => {
-        return {
-          allFeed: [
-            ...previousResult.allFeed, ...fetchMoreResult.allFeed,
-          ],
-        };
-      },
-    });
+      this.setState({ count: this.state.count + 1 })
+      fetchMore({
+        query: FEED_QUERY,
+        variables: { first: 5, after },
+        updateQuery: (previousResult, { fetchMoreResult, queryVariables }) => {
+          return {
+            allFeed: [
+              ...previousResult.allFeed, ...fetchMoreResult.allFeed,
+            ],
+          };
+        },
+      });
   }
 
   render() {
@@ -61,7 +60,12 @@ class FeedPage extends React.Component {
               refresh={() => this.props.feedQuery.refetch()}
             />
           ))}
+        {this.props.feedQuery.allFeed &&
+          !this.props.feedQuery.loading && this.props.feedQuery.allFeed.length === 0 &&
+          <div style={{ textAlign: 'center' }}>No posts! (Make some on your profile or search for friends)</div>}
+        {this.props.feedQuery.allFeed.length !== 0 &&
           <Icon onClick={() => this.onFetchMore()} style={{ paddingLeft: '50%' }} name='chevron down' />
+        }
       </React.Fragment>
     )
   }
