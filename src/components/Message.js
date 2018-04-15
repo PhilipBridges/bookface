@@ -14,6 +14,7 @@ const _deleteMessage = async (props) => {
   })
   props.history.replace('/profile')
 }
+// 
 
 const Message = (props) =>
   <Comment>
