@@ -33,7 +33,7 @@ const httpLinkWithMiddleware = afterwareLink.concat(
 );
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://rap-plate-mzyvymwqvb.now.sh/',
+  uri: process.env.REACT_APP_SOCKET,
   options: {
     reconnect: true,
     connectionParams: {

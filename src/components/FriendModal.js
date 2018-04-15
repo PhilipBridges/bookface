@@ -26,7 +26,7 @@ class FriendModal extends React.Component {
       variables: { sender: this.props.friend.id },
       fetchPolicy: 'network-only'
     })
-    await this.refs.query.refs.scrollbar.scrollToBottom()
+    await this.refs.query.refs.scrollbar && this.refs.query.refs.scrollbar.scrollToBottom()
     return response
   }
 
@@ -89,6 +89,12 @@ class FriendModal extends React.Component {
                 if (!subscriptionData.data) return prev;
                 const message = subscriptionData.data.message.node;
                 const newList = prev.boxQuery.filter(msg => msg.id !== message.id)
+                const scrollDown = () => {
+                  this.refs.query.refs.scrollbar && this.refs.query.refs.scrollbar.scrollToBottom()
+                }
+                setTimeout(function(){ 
+                  scrollDown()
+                 }, 500);
                 return {
                   boxQuery: [...newList, message]
                 }

@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import Loading from '../components/Loading'
 
 import 'tachyons'
-import { Visibility, Icon } from 'semantic-ui-react'
+import { Button, Icon } from 'semantic-ui-react'
 
 class FeedPage extends React.Component {
   state = {
@@ -61,13 +61,7 @@ class FeedPage extends React.Component {
               refresh={() => this.props.feedQuery.refetch()}
             />
           ))}
-        <Icon style={{ paddingLeft: '50%' }} name='chevron down' />
-        <Visibility
-          continuous={true}
-          onTopVisible={() => this.onFetchMore()}
-        >
-
-        </Visibility>
+          <Icon onClick={() => this.onFetchMore()} style={{ paddingLeft: '50%' }} name='chevron down' />
       </React.Fragment>
     )
   }
