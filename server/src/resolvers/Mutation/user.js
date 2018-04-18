@@ -1,4 +1,6 @@
+import * as mkdirp from 'mkdirp'
 const { getUserId } = require('../../utils')
+const { createWriteStream, fs } = require("fs");
 
 const user = {
   async createRequest(parent, { target, text }, ctx, info) {
@@ -141,6 +143,27 @@ const user = {
         }
       }
     })
+  },
+
+  uploadFile: async (parent, { file }, ctx) => {
+    const userId = getUserId(ctx)
+    var dir = `pics/${userId}/`
+    if (!mkdirp.sync(dir)) {
+      await fs.mkdirSync(dir);
+    }
+
+
+    const storeUpload = ({ stream, filename }) => {
+      new Promise((resolve, reject) =>
+        stream
+          .pipe(createWriteStream(`pics/${userId}/profile.jpg`))
+          .on("finish", () => resolve())
+          .on("error", reject)
+      )
+    }
+    const { stream, filename } = await file;
+    await storeUpload({ stream, filename });
+    return true;
   }
 }
 

@@ -1,7 +1,8 @@
 import React from 'react'
-import { graphql, compose } from 'react-apollo'
+import { graphql, compose, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withRouter, Link } from 'react-router-dom'
+import Dropzone from 'react-dropzone';
 
 import Post from '../components/Post'
 import Loading from '../components/Loading'
@@ -60,7 +61,18 @@ class Profile extends React.Component {
     return (
       <div>
         <Card className="flex fl w-50">
-          <Image centered size="small" src='/avatar.png' />
+          {me ?
+            <Mutation mutation={uploadFileMutation}>
+              {mutate => (
+                <Dropzone disabledStyle={{}} onDrop={([file]) => mutate({ variables: { file } })}>
+                  <Image centered size="small" src={`//localhost:4000/pics/${proId}/profile.jpg`} />
+                  <p style={{ textAlign: 'center' }} >Click to upload</p>
+                </Dropzone>
+              )}
+            </Mutation>
+            :
+            <Image centered size="small" src='/avatar.png' />
+          }
           <Card.Content textAlign="center">
             <Card.Header>{proName}</Card.Header>
             <Card.Description>Whatever dude</Card.Description>
@@ -109,6 +121,12 @@ class Profile extends React.Component {
     )
   }
 }
+
+const uploadFileMutation = gql`
+  mutation($file: Upload!) {
+    uploadFile(file: $file)
+  }
+`;
 
 const FRIEND_QUERY = gql`
   query friendQuery($target: ID!){
