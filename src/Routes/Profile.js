@@ -16,21 +16,21 @@ import 'tachyons'
 class Profile extends React.Component {
   state = {
     friendClick: false,
-    profilePic: '/avatar.png' 
+    profilePic: '/avatar.png'
   }
 
   componentWillReceiveProps(nextProps) {
-    let proId = nextProps.match.params.id
     if (this.props.location.key !== nextProps.location.key) {
       this.props.feedQuery.refetch()
-      if (proId) {
-        axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
-          .then(res => {
-            this.setState({ profilePic: res.request.responseURL })
-          })
-          .catch(error => console.log(error), this.setState({ profilePic: '/avatar.png' }))
-      }
+
+      let proId = nextProps.match.params.id
+      axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
+        .then(res => {
+          this.setState({ profilePic: res.request.responseURL })
+        })
+        .catch(this.setState({ profilePic: '/avatar.png' }))
     }
+
   }
 
   componentDidMount() {
@@ -38,9 +38,7 @@ class Profile extends React.Component {
     if (proId) {
       axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
         .then(res => {
-          if (res.status === 200) {
-            this.setState({ profilePic: res.request.responseURL })
-          }
+          this.setState({ profilePic: res.request.responseURL })
         })
         .catch(error => console.log(error))
     }
@@ -87,14 +85,23 @@ class Profile extends React.Component {
           {me === proId ?
             <Mutation mutation={uploadFileMutation}>
               {mutate => (
-                <Dropzone disabledStyle={{}} onDrop={([file]) => mutate({ variables: { file } })}>
-                  <Image centered size="small" src={this.state.profilePic} />
+                <Dropzone disabledStyle={{}} onDrop={async ([file]) => {
+                  await mutate({ variables: { file } })
+
+                  let proId = this.props.match.params.id
+                  await axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
+                    .then(res => {
+                      this.setState({ profilePic: res.request.responseURL })
+                    })
+                    .catch(this.setState({ profilePic: '/avatar.png' }))
+                }}>
+                  <Image style={{ borderRadius: '15px' }} centered size="small" src={this.state.profilePic} />
                   <p style={{ textAlign: 'center' }} >Click to upload</p>
                 </Dropzone>
               )}
             </Mutation>
             :
-            <Image centered size="small" src='/avatar.png' />
+            <Image centered size="small" style={{ borderRadius: '15px' }} src={this.state.profilePic} />
           }
           <Card.Content textAlign="center">
             <Card.Header>{proName}</Card.Header>
@@ -119,7 +126,7 @@ class Profile extends React.Component {
               {friendList.map(friend =>
                 <Grid.Column key={friend.id}>
                   <Link to={`/profile/${friend.id}`}>
-                    <Image src={`http://localhost:4000/pics/${friend.id}/profile.jpg`} />
+                    <Image style={{ borderRadius: '15px' }} src={`http://localhost:4000/pics/${friend.id}/profile.jpg`} />
                     {friend.name}
                   </Link>
                 </Grid.Column>
