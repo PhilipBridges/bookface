@@ -3,6 +3,7 @@ import { graphql, compose, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withRouter, Link } from 'react-router-dom'
 import Dropzone from 'react-dropzone';
+import axios from 'axios';
 
 import Post from '../components/Post'
 import Loading from '../components/Loading'
@@ -14,12 +15,32 @@ import 'tachyons'
 
 class Profile extends React.Component {
   state = {
-    friendClick: false
+    friendClick: false,
+    profilePic: '/avatar.png'
   }
 
   componentWillReceiveProps(nextProps) {
+    let proId = nextProps.match.params.id
     if (this.props.location.key !== nextProps.location.key) {
       this.props.feedQuery.refetch()
+      if (proId) {
+        axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
+          .then(res => {
+            if (res.status === 200) {
+              this.setState({ profilePic: res.request.responseURL })
+            }
+          })
+          .catch(error => console.log(error), this.setState({ profilePic: '/avatar.png' }))
+      }
+    }
+    if (proId) {
+      axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
+        .then(res => {
+          if (res.status === 200) {
+            this.setState({ profilePic: res.request.responseURL })
+          }
+        })
+        .catch(error => console.log(error))
     }
   }
 
@@ -65,7 +86,7 @@ class Profile extends React.Component {
             <Mutation mutation={uploadFileMutation}>
               {mutate => (
                 <Dropzone disabledStyle={{}} onDrop={([file]) => mutate({ variables: { file } })}>
-                  <Image centered size="small" src={`//localhost:4000/pics/${proId}/profile.jpg`} />
+                  <Image centered size="small" src={this.state.profilePic} />
                   <p style={{ textAlign: 'center' }} >Click to upload</p>
                 </Dropzone>
               )}

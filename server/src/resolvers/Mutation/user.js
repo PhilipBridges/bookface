@@ -1,6 +1,7 @@
 import * as mkdirp from 'mkdirp'
 const { getUserId } = require('../../utils')
-const { createWriteStream, fs } = require("fs");
+const { createReadStream, createWriteStream, fs } = require("fs");
+var path = require('path');
 
 const user = {
   async createRequest(parent, { target, text }, ctx, info) {
@@ -147,11 +148,9 @@ const user = {
 
   uploadFile: async (parent, { file }, ctx) => {
     const userId = getUserId(ctx)
-    var dir = `pics/${userId}/`
-    if (!mkdirp.sync(dir)) {
-      await fs.mkdirSync(dir);
-    }
+    const dir = `pics/${userId}`
 
+    await mkdirp.sync(dir)
 
     const storeUpload = ({ stream, filename }) => {
       new Promise((resolve, reject) =>
