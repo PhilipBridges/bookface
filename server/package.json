@@ -1,5 +1,5 @@
 {
-  "name": "pulltest",
+  "name": "bookface",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2",
     "playground": "prisma playground",
