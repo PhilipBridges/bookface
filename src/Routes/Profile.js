@@ -16,7 +16,7 @@ import 'tachyons'
 class Profile extends React.Component {
   state = {
     friendClick: false,
-    profilePic: '/avatar.png'
+    profilePic: '/avatar.png' 
   }
 
   componentWillReceiveProps(nextProps) {
@@ -26,13 +26,15 @@ class Profile extends React.Component {
       if (proId) {
         axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
           .then(res => {
-            if (res.status === 200) {
-              this.setState({ profilePic: res.request.responseURL })
-            }
+            this.setState({ profilePic: res.request.responseURL })
           })
           .catch(error => console.log(error), this.setState({ profilePic: '/avatar.png' }))
       }
     }
+  }
+
+  componentDidMount() {
+    let proId = this.props.match.params.id
     if (proId) {
       axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
         .then(res => {
@@ -82,7 +84,7 @@ class Profile extends React.Component {
     return (
       <div>
         <Card className="flex fl w-50">
-          {me ?
+          {me === proId ?
             <Mutation mutation={uploadFileMutation}>
               {mutate => (
                 <Dropzone disabledStyle={{}} onDrop={([file]) => mutate({ variables: { file } })}>
@@ -117,7 +119,7 @@ class Profile extends React.Component {
               {friendList.map(friend =>
                 <Grid.Column key={friend.id}>
                   <Link to={`/profile/${friend.id}`}>
-                    <Image src='/avatar.png' />
+                    <Image src={`http://localhost:4000/pics/${friend.id}/profile.jpg`} />
                     {friend.name}
                   </Link>
                 </Grid.Column>

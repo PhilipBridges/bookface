@@ -14,7 +14,7 @@ export default class Post extends React.Component {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'}} className="no-underline ma1">
         <Link to={`/profile/${author.id}`}>
-          <Image style={{ display: 'inline' }} size='mini' src='/avatar.png' /> {author.name}
+          <Image style={{ display: 'inline' }} size='mini' src={`http://localhost:4000/pics/${author.id}/profile.jpg`} /> {author.name}
           {title !== "" ? <span> posted a status</span> : <span> said...</span>}
         </Link>
         {title !== "" && <h2 className="f3 black-80 fw4 lh-solid">{title}</h2>}
