@@ -1,5 +1,4 @@
 const { getUserId } = require('../utils')
-const { createReadStream } = require("fs");
 
 const Query = {
   feed(parent, args, ctx, info) {
@@ -93,20 +92,6 @@ const Query = {
     const userId = getUserId(ctx)
     return ctx.db.query.friendRequests({ where: { target: { id: userId } }}, info)
   },
-
-  picture: async (parent, { file }) => {
-    const getUpload = ({ stream, filename }) =>
-      new Promise((resolve, reject) =>
-        stream
-          .pipe(createReadStream(`pics/${filename}`))
-          .on("finish", () => resolve())
-          .on("error", reject)
-      );
-    const { stream, filename } = await file;
-    await getUpload({ stream, filename });
-    return true;
-  }
-
 }
 
 module.exports = { Query }
