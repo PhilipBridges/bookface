@@ -1,7 +1,6 @@
-import * as mkdirp from 'mkdirp'
+const mkdirp = require('mkdirp')
 const { getUserId } = require('../../utils')
-const { createReadStream, createWriteStream, fs } = require("fs");
-var path = require('path');
+const { createWriteStream } = require("fs");
 
 const user = {
   async createRequest(parent, { target, text }, ctx, info) {
