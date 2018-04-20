@@ -24,7 +24,7 @@ class Profile extends React.Component {
       this.props.feedQuery.refetch()
 
       let proId = nextProps.match.params.id
-      axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
+      axios.get(`${process.env.REACT_APP_URI}/${proId}/profile.jpg`)
         .then(res => {
           this.setState({ profilePic: res.request.responseURL })
         })
@@ -36,7 +36,7 @@ class Profile extends React.Component {
   componentDidMount() {
     let proId = this.props.match.params.id
     if (proId) {
-      axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
+      axios.get(`${process.env.REACT_APP_URI}/${proId}/profile.jpg`)
         .then(res => {
           this.setState({ profilePic: res.request.responseURL })
         })
@@ -89,7 +89,7 @@ class Profile extends React.Component {
                   await mutate({ variables: { file } })
 
                   let proId = this.props.match.params.id
-                  await axios.get(`http://localhost:4000/pics/${proId}/profile.jpg`)
+                  await axios.get(`${process.env.REACT_APP_URI}/${proId}/profile.jpg`)
                     .then(res => {
                       this.setState({ profilePic: res.request.responseURL })
                     })
@@ -126,7 +126,7 @@ class Profile extends React.Component {
               {friendList.map(friend =>
                 <Grid.Column key={friend.id}>
                   <Link to={`/profile/${friend.id}`}>
-                    <Image style={{ borderRadius: '15px' }} src={`http://localhost:4000/pics/${friend.id}/profile.jpg`} />
+                    <Image style={{ borderRadius: '15px' }} src={`${process.env.REACT_APP_URI}/pics/${friend.id}/profile.jpg`} />
                     {friend.name}
                   </Link>
                 </Grid.Column>

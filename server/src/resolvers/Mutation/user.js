@@ -147,14 +147,14 @@ const user = {
 
   uploadFile: async (parent, { file }, ctx) => {
     const userId = getUserId(ctx)
-    const dir = `pics/${userId}`
+    const dir = `${process.env.REACT_APP_URI}/pics/${userId}/profile.jpg`
 
     await mkdirp.sync(dir)
 
     const storeUpload = ({ stream, filename }) => {
       new Promise((resolve, reject) =>
         stream
-          .pipe(createWriteStream(`pics/${userId}/profile.jpg`))
+          .pipe(createWriteStream(`${process.env.REACT_APP_URI}/pics/${userId}/profile.jpg`))
           .on("finish", () => resolve())
           .on("error", reject)
       )
