@@ -6,7 +6,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 import { createUploadLink } from 'apollo-upload-client'
 
-require('dotenv').config({path: '../.env'})
+require('dotenv').config({path: '../prod.env'})
 
 const httpLink = new createUploadLink({ uri: process.env.REACT_APP_URI })
 
