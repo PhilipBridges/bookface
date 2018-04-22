@@ -9,14 +9,15 @@ import Post from '../components/Post'
 import Loading from '../components/Loading'
 import CreatePageWithMutation from './CreatePage'
 
-import { Card, Image, Comment, Grid } from 'semantic-ui-react'
+import { Card, Image, Comment, Grid, Message } from 'semantic-ui-react'
 
 import 'tachyons'
 
 class Profile extends React.Component {
   state = {
     friendClick: false,
-    profilePic: '/avatar.png'
+    profilePic: '/avatar.png',
+    error: ''
   }
 
   componentWillReceiveProps(nextProps) {
@@ -24,23 +25,22 @@ class Profile extends React.Component {
       this.props.feedQuery.refetch()
 
       let proId = nextProps.match.params.id
-      axios.get(`${process.env.REACT_APP_URI}/${proId}/profile.jpg`)
+      axios.get(`${process.env.REACT_APP_URI}/pics/${proId}/profile.jpg`)
         .then(res => {
           this.setState({ profilePic: res.request.responseURL })
         })
-        .catch(this.setState({ profilePic: '/avatar.png' }))
+        .catch(err => this.setState({ profilePic: '/avatar.png' }))
     }
-
   }
 
   componentDidMount() {
     let proId = this.props.match.params.id
     if (proId) {
-      axios.get(`${process.env.REACT_APP_URI}/${proId}/profile.jpg`)
+      axios.get(`${process.env.REACT_APP_URI}/pics/${proId}/profile.jpg`)
         .then(res => {
           this.setState({ profilePic: res.request.responseURL })
         })
-        .catch(error => console.log(error))
+        .catch(error => this.setState({ profilePic: '/avatar.png' }))
     }
   }
 
@@ -85,17 +85,37 @@ class Profile extends React.Component {
           {me === proId ?
             <Mutation mutation={uploadFileMutation}>
               {mutate => (
-                <Dropzone disabledStyle={{}} onDrop={async ([file]) => {
-                  await mutate({ variables: { file } })
+                <Dropzone
+                  minSize={0}
+                  maxSize={256000}
+                  disabledStyle={{}}
 
-                  let proId = this.props.match.params.id
-                  await axios.get(`${process.env.REACT_APP_URI}/${proId}/profile.jpg`)
-                    .then(res => {
-                      this.setState({ profilePic: res.request.responseURL })
-                    })
-                    .catch(this.setState({ profilePic: '/avatar.png' }))
-                }}>
+                  onDropRejected={() => {
+                    this.setState({ error: 'Image too big. (Maximum of 256KB' })
+                    setTimeout(() => {
+                      this.setState({ error: '' })
+                    }, 3000);
+                  }}
+
+                  onDropAccepted={async ([file]) => {
+                    if (file) {
+                      await mutate({ variables: { file } })
+
+                      let proId = this.props.match.params.id
+                      await axios.get(`${process.env.REACT_APP_URI}/pics/${proId}/profile.jpg`)
+                        .then(res => {
+                          this.setState({ profilePic: res.request.responseURL })
+                        })
+                        .catch(this.setState({ profilePic: '/avatar.png' }))
+                    }
+                  }}>
+
                   <Image style={{ borderRadius: '15px' }} centered size="small" src={this.state.profilePic} />
+
+                  {this.state.error !== '' &&
+                    <Message size='tiny' warning>
+                      <Message.Header>{this.state.error}</Message.Header>
+                    </Message>}
                   <p style={{ textAlign: 'center' }} >Click to upload</p>
                 </Dropzone>
               )}
@@ -123,14 +143,34 @@ class Profile extends React.Component {
           </Card.Content>
           <div className="tc flex flex-column">
             <Grid container columns={3}>
-              {friendList.map(friend =>
-                <Grid.Column key={friend.id}>
-                  <Link to={`/profile/${friend.id}`}>
-                    <Image style={{ borderRadius: '15px' }} src={`${process.env.REACT_APP_URI}/pics/${friend.id}/profile.jpg`} />
-                    {friend.name}
-                  </Link>
-                </Grid.Column>
-              )}
+
+              {friendList.map(friend => {
+
+                async function g() {
+                  let check = null
+                  try {
+                    check = await axios.get(`${process.env.REACT_APP_URI}/pics/${friend.id}/profile.jpg`)
+                  }
+                  catch (err) {
+                    return err.response
+                  }
+                  return check
+                }
+
+                const picCheck = g().then(res => res.status)
+
+                return (
+                  <Grid.Column key={friend.id}>
+                    {console.log(picCheck)}
+                    {picCheck ? <div>Congrats</div> : <div>Nope</div>}
+                    <Link to={`/profile/${friend.id}`}>
+                      {friend.name}
+                    </Link>
+                  </Grid.Column>
+                )
+              })
+              }
+
             </Grid>
           </div>
         </Card>
@@ -154,59 +194,59 @@ class Profile extends React.Component {
 
 const uploadFileMutation = gql`
   mutation($file: Upload!) {
-    uploadFile(file: $file)
-  }
-`;
+          uploadFile(file: $file)
+      }
+    `;
 
 const FRIEND_QUERY = gql`
   query friendQuery($target: ID!){
-  friendQuery(target: $target){
-    proId
+          friendQuery(target: $target){
+          proId
     proName
-    friendList {
-      id
+        friendList {
+          id
       name
-    }
-    }
-  }
-`
+        }
+        }
+      }
+    `
 
 const FEED_QUERY = gql`
   query FeedQuery($wallId: ID, ){
-    feed(wallId: $wallId, orderBy: createdAt_DESC){
-      id
+          feed(wallId: $wallId, orderBy: createdAt_DESC){
+          id
       text
-      title
-      createdAt
-      wallId
+        title
+        createdAt
+        wallId
       author {
-        id
+          id
         name
+        }
       }
     }
-  }
-`
+  `
 
 const FRIEND_MUTATION = gql`
   mutation createRequest($target: ID!, $text: String){
-    createRequest(target: $target, text: $text)
-}
-`
+          createRequest(target: $target, text: $text)
+    }
+    `
 const UNFRIEND_MUTATION = gql`
   mutation unfriendMutation($target: ID!){
-    deleteFriend(target: $target) {
-    id
-  }
-}
-`
+          deleteFriend(target: $target) {
+          id
+        }
+        }
+        `
 
 const ME_QUERY = gql`
   query meQuery {
-    me {
-      id
+          me {
+        id
+      }
     }
-  }
-`
+  `
 
 export default compose(
   graphql(ME_QUERY, {

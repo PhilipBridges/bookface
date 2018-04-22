@@ -48,7 +48,7 @@ class FriendModal extends React.Component {
         <Query ref='query' query={BOX_QUERY} variables={{ sender: this.props.friend.id, first: 10, before: undefined }}
         >
           {({ loading, data, subscribeToMore, fetchMore }) => {
-            if (loading) {
+            if (loading || data.boxQuery.length === 0) {
               return null;
             }
             let before = this.state.last === '' ? data.boxQuery[0].id : this.state.last

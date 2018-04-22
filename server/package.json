@@ -22,6 +22,7 @@
     "micro-cors": "^0.1.0",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.17.3",
+    "now-storage": "^1.2.0",
     "prisma-binding": "^1.5.17",
     "serve": "^6.5.3"
   },

@@ -5,7 +5,7 @@ const { Prisma } = require('prisma-binding')
 const resolvers = require('./resolvers')
 const express = require('express')
 
-require('dotenv').config({path: '../prod.env'})
+require('dotenv').config({path: '../.env'})
 
 const server = new GraphQLServer({
   typeDefs: "./src/schema.graphql",

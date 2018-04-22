@@ -1,6 +1,7 @@
 const mkdirp = require('mkdirp')
 const { getUserId } = require('../../utils')
 const { createWriteStream } = require("fs");
+const { upload } = require('now-storage');
 
 const user = {
   async createRequest(parent, { target, text }, ctx, info) {
@@ -36,7 +37,6 @@ const user = {
     return response
   },
   async deleteRequest(parent, { id }, ctx, info) {
-    const userId = getUserId(ctx)
     const response = await ctx.db.mutation.deleteFriendRequest({
       where: { id }
     }, info)
@@ -147,14 +147,14 @@ const user = {
 
   uploadFile: async (parent, { file }, ctx) => {
     const userId = getUserId(ctx)
-    const dir = `${process.env.REACT_APP_URI}/pics/${userId}/profile.jpg`
+    const dir = `pics/${userId}`
 
     await mkdirp.sync(dir)
 
     const storeUpload = ({ stream, filename }) => {
       new Promise((resolve, reject) =>
         stream
-          .pipe(createWriteStream(`${process.env.REACT_APP_URI}/pics/${userId}/profile.jpg`))
+        .pipe(createWriteStream(`pics/${userId}/profile.jpg`))
           .on("finish", () => resolve())
           .on("error", reject)
       )
