@@ -3,8 +3,6 @@ import { graphql, compose, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withRouter, Link } from 'react-router-dom'
 import Dropzone from 'react-dropzone';
-import axios from 'axios';
-
 import Post from '../components/Post'
 import Loading from '../components/Loading'
 import CreatePageWithMutation from './CreatePage'
@@ -16,31 +14,14 @@ import 'tachyons'
 class Profile extends React.Component {
   state = {
     friendClick: false,
-    profilePic: '/avatar.png',
+    uploading: '',
     error: ''
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location.key !== nextProps.location.key) {
       this.props.feedQuery.refetch()
-
-      let proId = nextProps.match.params.id
-      axios.get(`${process.env.REACT_APP_URI}/pics/${proId}/profile.jpg`)
-        .then(res => {
-          this.setState({ profilePic: res.request.responseURL })
-        })
-        .catch(err => this.setState({ profilePic: '/avatar.png' }))
-    }
-  }
-
-  componentDidMount() {
-    let proId = this.props.match.params.id
-    if (proId) {
-      axios.get(`${process.env.REACT_APP_URI}/pics/${proId}/profile.jpg`)
-        .then(res => {
-          this.setState({ profilePic: res.request.responseURL })
-        })
-        .catch(error => this.setState({ profilePic: '/avatar.png' }))
+      this.props.friendQuery.refetch()
     }
   }
 
@@ -64,7 +45,7 @@ class Profile extends React.Component {
 
   render() {
 
-    if (this.props.meQuery.loading || this.props.friendQuery.loading) {
+    if (this.props.meQuery.loading || this.props.friendQuery.loading || this.props.feedQuery.loading) {
       return (
         <div className="flex w-100 h-100 items-center justify-center pt7">
           <Loading />
@@ -86,12 +67,12 @@ class Profile extends React.Component {
             <Mutation mutation={uploadFileMutation}>
               {mutate => (
                 <Dropzone
-                  minSize={0}
-                  maxSize={256000}
+                  minSize={5}
+                  maxSize={200000}
                   disabledStyle={{}}
 
                   onDropRejected={() => {
-                    this.setState({ error: 'Image too big. (Maximum of 256KB' })
+                    this.setState({ error: 'Image too big. (Maximum of 200KB' })
                     setTimeout(() => {
                       this.setState({ error: '' })
                     }, 3000);
@@ -100,15 +81,12 @@ class Profile extends React.Component {
                   onDropAccepted={async ([file]) => {
                     if (file) {
                       await mutate({ variables: { file } })
-
-                      let proId = this.props.match.params.id
-                      await axios.get(`${process.env.REACT_APP_URI}/pics/${proId}/profile.jpg`)
-                        .then(res => {
-                          this.setState({ profilePic: res.request.responseURL })
-                        })
-                        .catch(this.setState({ profilePic: '/avatar.png' }))
+                      this.props.friendQuery.refetch()
                     }
-                  }}>
+                  }}
+
+
+                >
 
                   <Image style={{ borderRadius: '15px' }} centered size="small" src={profilePic} />
 
@@ -116,12 +94,15 @@ class Profile extends React.Component {
                     <Message size='tiny' warning>
                       <Message.Header>{this.state.error}</Message.Header>
                     </Message>}
+
+
                   <p style={{ textAlign: 'center' }} >Click to upload</p>
                 </Dropzone>
+
               )}
             </Mutation>
             :
-            <Image centered size="small" style={{ borderRadius: '15px' }} src={this.state.profilePic} />
+            <Image centered size="small" style={{ borderRadius: '15px' }} src={profilePic} />
           }
           <Card.Content textAlign="center">
             <Card.Header>{proName}</Card.Header>
@@ -146,23 +127,10 @@ class Profile extends React.Component {
 
               {friendList.map(friend => {
 
-                async function g() {
-                  let check = null
-                  try {
-                    check = await axios.get(`${process.env.REACT_APP_URI}/pics/${friend.id}/profile.jpg`)
-                  }
-                  catch (err) {
-                    return err.response
-                  }
-                  return check
-                }
-
-                const picCheck = g().then(res => res.status)
-
                 return (
                   <Grid.Column key={friend.id}>
-                    {picCheck ? <div>Congrats</div> : <div>Nope</div>}
                     <Link to={`/profile/${friend.id}`}>
+                      <Image style={{ borderRadius: '15px' }} src={friend.profilePic} />
                       {friend.name}
                     </Link>
                   </Grid.Column>
@@ -206,6 +174,7 @@ const FRIEND_QUERY = gql`
           friendList {
             id
             name
+            profilePic
           }
         }
       }
@@ -213,15 +182,16 @@ const FRIEND_QUERY = gql`
 
 const FEED_QUERY = gql`
   query FeedQuery($wallId: ID, ){
-          feed(wallId: $wallId, orderBy: createdAt_DESC){
-          id
+      feed(wallId: $wallId, orderBy: createdAt_DESC){
+      id
       text
-        title
-        createdAt
-        wallId
+      title
+      createdAt
+      wallId
       author {
           id
-        name
+          name
+          profilePic
         }
       }
     }

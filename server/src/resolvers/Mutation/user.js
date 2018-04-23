@@ -168,8 +168,6 @@ const user = {
 
     const image = await readFile(`pics/${userId}/profile.jpg`);
 
-    console.log(image)
-
     const { url } = await upload(process.env.NOW_TOKEN, {
       name: 'profile.jpg',
       content: image
@@ -181,8 +179,15 @@ const user = {
         profilePic: "https://" + url
       }
     })
-
     return true
+  },
+  updateUsers(parent, { target }, ctx, info) {
+    ctx.db.mutation.updateManyUsers({
+      data: {
+        profilePic: "/avatar.png"
+      }
+    })
+    return {count: 0}
   }
 }
 

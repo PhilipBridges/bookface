@@ -11,7 +11,6 @@ type Query {
   friendQuery(target: ID!): Profile
   sidebarFriendQuery: [User!]!
   requestQuery(target: ID, sender: ID): [FriendRequest!]
-  picture(id: ID!): Upload
 }
 
 type Subscription {
@@ -32,6 +31,7 @@ type Mutation {
   addFriend(target: ID!, request: ID!): User
   deleteFriend(target: ID!): User
   uploadFile(file: Upload!): Boolean
+  updateUsers: BatchPayload!
 }
 
 type AuthPayload {
@@ -46,13 +46,14 @@ type User {
   name: String
   posts: [Post!]
   friendList: [String!]
+  profilePic: String!
 }
 
 type Profile {
   proId: ID!
   proName: String!
   friendList: [User!]!
-  profilePic: String!
+  profilePic: String
 }
 
 type MessagePayload {

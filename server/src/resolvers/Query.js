@@ -64,12 +64,13 @@ const Query = {
         profilePic
       }`
     )
+    const getPic = getUser.profilePic !== null ? getUser.profilePic : "/avatar.png"
     const friendList = getUser.friendList
     const newList = friendList.map(async (friend) => {
       const currUser = await ctx.db.query.user({ where: { id: friend } })
-      return { id: currUser.id, name: currUser.name }
+      return { id: currUser.id, name: currUser.name, profilePic: currUser.profilePic ? currUser.profilePic : '/avatar.png' }
     })
-    return { friendList: newList, proId: getUser.id, proName: getUser.name, profilePic: getUser.profilePic }
+    return { friendList: newList, proId: getUser.id, proName: getUser.name, profilePic: getPic }
   },
 
   async sidebarFriendQuery(parent, args, ctx, info) {

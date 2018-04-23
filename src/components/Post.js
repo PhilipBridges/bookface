@@ -10,11 +10,12 @@ import 'tachyons'
 export default class Post extends React.Component {
   render() {
     let { title, id, text, author, createdAt } = this.props.post
+    let profilePic  = author.profilePic ? author.profilePic : '/avatar.png'
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'}} className="no-underline ma1">
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }} className="no-underline ma1">
         <Link to={`/profile/${author.id}`}>
-          <Image style={{ display: 'inline', borderRadius: '15px' }} size='mini' src={`${process.env.REACT_APP_URI}/pics/${author.id}/profile.jpg`} /> {author.name}
+          <Image style={{ display: 'inline', borderRadius: '15px' }} size='mini' src={profilePic} /> {author.name}
           {title !== "" ? <span> posted a status</span> : <span> said...</span>}
         </Link>
         {title !== "" && <h2 className="f3 black-80 fw4 lh-solid">{title}</h2>}
