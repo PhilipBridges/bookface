@@ -42,6 +42,7 @@ type User implements Node {
   sentRequests(where: FriendRequestWhereInput, orderBy: FriendRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FriendRequest!]
   receivedRequests(where: FriendRequestWhereInput, orderBy: FriendRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FriendRequest!]
   friendList: [String!]
+  profilePic: String
 }
 
 
@@ -727,14 +728,14 @@ type Mutation {
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertMessage(where: MessageWhereUniqueInput!, create: MessageCreateInput!, update: MessageUpdateInput!): Message!
   upsertFriendRequest(where: FriendRequestWhereUniqueInput!, create: FriendRequestCreateInput!, update: FriendRequestUpdateInput!): FriendRequest!
-  updateManyPosts(data: PostUpdateInput!, where: PostWhereInput!): BatchPayload!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput!): BatchPayload!
-  updateManyMessages(data: MessageUpdateInput!, where: MessageWhereInput!): BatchPayload!
-  updateManyFriendRequests(data: FriendRequestUpdateInput!, where: FriendRequestWhereInput!): BatchPayload!
-  deleteManyPosts(where: PostWhereInput!): BatchPayload!
-  deleteManyUsers(where: UserWhereInput!): BatchPayload!
-  deleteManyMessages(where: MessageWhereInput!): BatchPayload!
-  deleteManyFriendRequests(where: FriendRequestWhereInput!): BatchPayload!
+  updateManyPosts(data: PostUpdateInput!, where: PostWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  updateManyMessages(data: MessageUpdateInput!, where: MessageWhereInput): BatchPayload!
+  updateManyFriendRequests(data: FriendRequestUpdateInput!, where: FriendRequestWhereInput): BatchPayload!
+  deleteManyPosts(where: PostWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyMessages(where: MessageWhereInput): BatchPayload!
+  deleteManyFriendRequests(where: FriendRequestWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -1252,6 +1253,7 @@ input UserCreateInput {
   email: String!
   password: String!
   name: String!
+  profilePic: String
   friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
@@ -1289,6 +1291,7 @@ input UserCreateWithoutPostsInput {
   email: String!
   password: String!
   name: String!
+  profilePic: String
   friendList: UserCreatefriendListInput
   sentMessages: MessageCreateManyWithoutSenderInput
   receivedMessages: MessageCreateManyWithoutTargetInput
@@ -1300,6 +1303,7 @@ input UserCreateWithoutReceivedMessagesInput {
   email: String!
   password: String!
   name: String!
+  profilePic: String
   friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
@@ -1311,6 +1315,7 @@ input UserCreateWithoutReceivedRequestsInput {
   email: String!
   password: String!
   name: String!
+  profilePic: String
   friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
@@ -1322,6 +1327,7 @@ input UserCreateWithoutSentMessagesInput {
   email: String!
   password: String!
   name: String!
+  profilePic: String
   friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   receivedMessages: MessageCreateManyWithoutTargetInput
@@ -1333,6 +1339,7 @@ input UserCreateWithoutSentRequestsInput {
   email: String!
   password: String!
   name: String!
+  profilePic: String
   friendList: UserCreatefriendListInput
   posts: PostCreateManyWithoutAuthorInput
   sentMessages: MessageCreateManyWithoutSenderInput
@@ -1363,6 +1370,8 @@ enum UserOrderByInput {
   password_DESC
   name_ASC
   name_DESC
+  profilePic_ASC
+  profilePic_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -1375,6 +1384,7 @@ type UserPreviousValues {
   password: String!
   name: String!
   friendList: [String!]
+  profilePic: String
 }
 
 type UserSubscriptionPayload {
@@ -1420,6 +1430,7 @@ input UserUpdateInput {
   email: String
   password: String
   name: String
+  profilePic: String
   friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
@@ -1473,6 +1484,7 @@ input UserUpdateWithoutPostsDataInput {
   email: String
   password: String
   name: String
+  profilePic: String
   friendList: UserUpdatefriendListInput
   sentMessages: MessageUpdateManyWithoutSenderInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
@@ -1484,6 +1496,7 @@ input UserUpdateWithoutReceivedMessagesDataInput {
   email: String
   password: String
   name: String
+  profilePic: String
   friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
@@ -1495,6 +1508,7 @@ input UserUpdateWithoutReceivedRequestsDataInput {
   email: String
   password: String
   name: String
+  profilePic: String
   friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
@@ -1506,6 +1520,7 @@ input UserUpdateWithoutSentMessagesDataInput {
   email: String
   password: String
   name: String
+  profilePic: String
   friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   receivedMessages: MessageUpdateManyWithoutTargetInput
@@ -1517,6 +1532,7 @@ input UserUpdateWithoutSentRequestsDataInput {
   email: String
   password: String
   name: String
+  profilePic: String
   friendList: UserUpdatefriendListInput
   posts: PostUpdateManyWithoutAuthorInput
   sentMessages: MessageUpdateManyWithoutSenderInput
@@ -1770,6 +1786,59 @@ input UserWhereInput {
   All values not ending with the given string.
   """
   name_not_ends_with: String
+  profilePic: String
+  """
+  All values that are not equal to given value.
+  """
+  profilePic_not: String
+  """
+  All values that are contained in given list.
+  """
+  profilePic_in: [String!]
+  """
+  All values that are not contained in given list.
+  """
+  profilePic_not_in: [String!]
+  """
+  All values less than the given value.
+  """
+  profilePic_lt: String
+  """
+  All values less than or equal the given value.
+  """
+  profilePic_lte: String
+  """
+  All values greater than the given value.
+  """
+  profilePic_gt: String
+  """
+  All values greater than or equal the given value.
+  """
+  profilePic_gte: String
+  """
+  All values containing the given string.
+  """
+  profilePic_contains: String
+  """
+  All values not containing the given string.
+  """
+  profilePic_not_contains: String
+  """
+  All values starting with the given string.
+  """
+  profilePic_starts_with: String
+  """
+  All values not starting with the given string.
+  """
+  profilePic_not_starts_with: String
+  """
+  All values ending with the given string.
+  """
+  profilePic_ends_with: String
+  """
+  All values not ending with the given string.
+  """
+  profilePic_not_ends_with: String
   posts_every: PostWhereInput
   posts_some: PostWhereInput
   posts_none: PostWhereInput

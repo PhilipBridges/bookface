@@ -72,7 +72,7 @@ class Profile extends React.Component {
       )
     }
 
-    const { proName, proId } = this.props.friendQuery.friendQuery
+    const { proName, proId, profilePic } = this.props.friendQuery.friendQuery
     const posts = this.props.feedQuery.feed
     const friendList = this.props.friendQuery.friendQuery.friendList
     const me = this.props.meQuery.me.id
@@ -110,7 +110,7 @@ class Profile extends React.Component {
                     }
                   }}>
 
-                  <Image style={{ borderRadius: '15px' }} centered size="small" src={this.state.profilePic} />
+                  <Image style={{ borderRadius: '15px' }} centered size="small" src={profilePic} />
 
                   {this.state.error !== '' &&
                     <Message size='tiny' warning>
@@ -161,7 +161,6 @@ class Profile extends React.Component {
 
                 return (
                   <Grid.Column key={friend.id}>
-                    {console.log(picCheck)}
                     {picCheck ? <div>Congrats</div> : <div>Nope</div>}
                     <Link to={`/profile/${friend.id}`}>
                       {friend.name}
@@ -202,11 +201,12 @@ const FRIEND_QUERY = gql`
   query friendQuery($target: ID!){
           friendQuery(target: $target){
           proId
-    proName
-        friendList {
-          id
-      name
-        }
+          proName
+          profilePic
+          friendList {
+            id
+            name
+          }
         }
       }
     `

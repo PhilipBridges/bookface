@@ -52,6 +52,7 @@ type Profile {
   proId: ID!
   proName: String!
   friendList: [User!]!
+  profilePic: String!
 }
 
 type MessagePayload {

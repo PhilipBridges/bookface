@@ -3,6 +3,8 @@ const fs = require('fs');
 const { upload } = require('now-storage');
 const { promisify } = require('util');
 const readFile = promisify(fs.readFile);
+const { createWriteStream } = require("fs");
+const mkdirp = require('mkdirp')
 
 const user = {
   async createRequest(parent, { target, text }, ctx, info) {
@@ -147,15 +149,40 @@ const user = {
   },
 
   uploadFile: async (parent, { file }, ctx) => {
-      // we need to convert the JS object to string
-      const content = file
-      // upload the stringified JSON as a normal text file
-      const { url } = await upload(process.env.NOW_TOKEN, {
-        name: 'profile.jpg',
-        content
-      });
-      console.log(url)
-      return url;
+    const userId = getUserId(ctx)
+    const dir = `pics/${userId}`
+
+    await mkdirp.sync(dir)
+
+    const storeUpload = ({ stream, filename }) => {
+      new Promise((resolve, reject) =>
+        stream
+          .pipe(createWriteStream(`pics/${userId}/profile.jpg`))
+          .on("finish", () => resolve())
+          .on("error", reject)
+      )
+    }
+
+    const { stream, filename } = await file;
+    await storeUpload({ stream, filename });
+
+    const image = await readFile(`pics/${userId}/profile.jpg`);
+
+    console.log(image)
+
+    const { url } = await upload(process.env.NOW_TOKEN, {
+      name: 'profile.jpg',
+      content: image
+    });
+
+    ctx.db.mutation.updateUser({
+      where: { id: userId },
+      data: {
+        profilePic: "https://" + url
+      }
+    })
+
+    return true
   }
 }
 

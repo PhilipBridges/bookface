@@ -61,6 +61,7 @@ const Query = {
         id
         name
         friendList
+        profilePic
       }`
     )
     const friendList = getUser.friendList
@@ -68,7 +69,7 @@ const Query = {
       const currUser = await ctx.db.query.user({ where: { id: friend } })
       return { id: currUser.id, name: currUser.name }
     })
-    return { friendList: newList, proId: getUser.id, proName: getUser.name }
+    return { friendList: newList, proId: getUser.id, proName: getUser.name, profilePic: getUser.profilePic }
   },
 
   async sidebarFriendQuery(parent, args, ctx, info) {

@@ -19,6 +19,7 @@ type User {
   sentRequests: [FriendRequest!]! @relation(name: "Friender")
   receivedRequests: [FriendRequest!]! @relation(name: "Friendee")
   friendList: [String!]!
+  profilePic: String @default(value: "/avatar.png")
 }
 
 type Message {
