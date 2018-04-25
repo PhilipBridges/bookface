@@ -81,11 +81,9 @@ class Profile extends React.Component {
                   onDropAccepted={async ([file]) => {
                     if (file) {
                       await mutate({ variables: { file } })
-                      this.props.friendQuery.refetch()
                     }
+                    this.props.friendQuery.refetch()
                   }}
-
-
                 >
 
                   <Image style={{ borderRadius: '15px' }} centered size="small" src={profilePic} />

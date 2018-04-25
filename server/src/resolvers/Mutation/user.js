@@ -153,6 +153,7 @@ const user = {
     const dir = `pics/${userId}`
 
     await mkdirp.sync(dir)
+    const { stream, filename } = await file;
 
     const storeUpload = ({ stream, filename }) => {
       new Promise((resolve, reject) =>
@@ -163,7 +164,6 @@ const user = {
       )
     }
 
-    const { stream, filename } = await file;
     await storeUpload({ stream, filename });
 
     const image = await readFile(`pics/${userId}/profile.jpg`);
@@ -173,7 +173,7 @@ const user = {
       content: image
     });
 
-    ctx.db.mutation.updateUser({
+    await ctx.db.mutation.updateUser({
       where: { id: userId },
       data: {
         profilePic: "https://" + url
@@ -181,6 +181,7 @@ const user = {
     })
     return true
   },
+
   updateUsers(parent, { target }, ctx, info) {
     ctx.db.mutation.updateManyUsers({
       data: {
