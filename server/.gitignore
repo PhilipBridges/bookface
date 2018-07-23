@@ -1,9 +1,0 @@
-.env*
-dist
-package-lock.json
-node_modules
-.idea
-.vscode
-*.log
-dump.txt
-/pics

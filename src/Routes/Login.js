@@ -2,8 +2,8 @@ import React from 'react';
 import { Form, Button, Input, Container, Header } from 'semantic-ui-react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
+import * as yup from 'yup'
 import { withFormik } from 'formik';
-import Yup from 'yup';
 
 import { Link } from 'react-router-dom'
 
@@ -78,11 +78,11 @@ export default compose(
   graphql(loginMutation),
   withFormik({
     mapPropsToValues: () => ({ email: '', password: '', error: '' }),
-    validationSchema: Yup.object().shape({
-      email: Yup.string()
+    validationSchema: yup.object().shape({
+      email: yup.string()
         .email('Invalid email address')
         .required('Email is required!'),
-      password: Yup.string()
+      password: yup.string()
         .required('Invalid Password.'),
     }),
     handleSubmit: async (

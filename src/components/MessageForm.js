@@ -3,7 +3,7 @@ import { Form, Button, Input, Container, Header } from 'semantic-ui-react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import { withFormik } from 'formik';
-import Yup from 'yup';
+import * as yup from 'yup'
 
 import '../Style/Form.css';
 
@@ -76,10 +76,10 @@ export default compose(
   graphql(CREATE_MESSAGE_MUTATION),
   withFormik({
     mapPropsToValues: () => ({ target: '', text: '', error: '' }),
-    validationSchema: Yup.object().shape({
-      target: Yup.string()
+    validationSchema: yup.object().shape({
+      target: yup.string()
         .required('Username is required.'),
-      text: Yup.string()
+      text: yup.string()
         .required('You must input a message.'),
     }),
     handleSubmit: async (

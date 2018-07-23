@@ -9,8 +9,6 @@ import './index.css'
 import client from './apollo'
 import Routes from './Routes'
 
-require('dotenv').config({path: './.env'})
-
 ReactDOM.render(
   <ApolloProvider client={client}>
     <Routes />
