@@ -47,6 +47,6 @@
     "eject": "react-scripts eject",
     "prettier": "prettier-eslint --write \"src/**/*.+(js|jsx)\"",
     "prettier-dry-run": "prettier-eslint \"src/**/*.+(js|jsx)\" -l debug",
-    "heroku-postbuild": "npm run build && cd build"
+    "postinstall": "react-scripts build"
   }
 }
