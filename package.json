@@ -17,6 +17,7 @@
     "apollo-link-ws": "^1.0.7",
     "apollo-upload-client": "^8.0.0",
     "axios": "^0.18.0",
+    "dotenv": "^6.0.0",
     "downshift": "^2.0.18",
     "formik": "^1.0.1",
     "graphql": "0.13.2",

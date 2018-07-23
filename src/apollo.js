@@ -6,7 +6,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 import { createUploadLink } from 'apollo-upload-client'
 
-const httpLink = new createUploadLink({ uri: process.env.REACT_APP_URI })
+const httpLink = new createUploadLink({ uri: 'https://bookface-nlhocfagoz.now.sh/' })
 
 const middlewareLink = setContext(() => ({
   headers: {
@@ -31,7 +31,7 @@ const httpLinkWithMiddleware = afterwareLink.concat(
 );
 
 const wsLink = new WebSocketLink({
-  uri: process.env.REACT_APP_SOCKET,
+  uri: 'wss://bookface-nlhocfagoz.now.sh/',
   options: {
     reconnect: true,
     connectionParams: {
