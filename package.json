@@ -42,13 +42,13 @@
     "yup": "^0.26.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node app.js",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "prettier": "prettier-eslint --write \"src/**/*.+(js|jsx)\"",
     "prettier-dry-run": "prettier-eslint \"src/**/*.+(js|jsx)\" -l debug",
     "postinstall": "react-scripts build",
-    "heroku-postbuild": "serve -s build"
+    "heroku-postbuild": "npm install && npm run build"
   }
 }
