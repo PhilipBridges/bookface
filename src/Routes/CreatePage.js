@@ -1,63 +1,66 @@
-import React from 'react'
-import { withRouter } from 'react-router-dom'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
+import React from "react";
+import { withRouter } from "react-router-dom";
+import { graphql } from "react-apollo";
+import gql from "graphql-tag";
 
 class CreatePage extends React.Component {
   state = {
-    title: '',
-    text: '',
-  }
+    title: "",
+    text: "",
+  };
 
+  // shows the news feed
   render() {
-    const wallPost = this.props.wall
+    const wallPost = this.props.wall;
 
     return (
       <div className="pa4 flex justify-center bg-white">
         <form onSubmit={this.handlePost}>
           {!wallPost && <h1>Create Post</h1>}
-          {!wallPost && <input
-            autoFocus
-            className="w-100 pa2 mv2 br2 b--black-20 bw1"
-            onChange={e => this.setState({ title: e.target.value })}
-            placeholder="Title"
-            type="text"
-            value={this.state.title}
-          />}
+          {!wallPost && (
+            <input
+              autoFocus
+              className="w-100 pa2 mv2 br2 b--black-20 bw1"
+              onChange={(e) => this.setState({ title: e.target.value })}
+              placeholder="Title"
+              type="text"
+              value={this.state.title}
+            />
+          )}
           <textarea
             className="db w-100 ba bw1 b--black-20 pa2 br2 mb2"
             cols={50}
-            onChange={e => this.setState({ text: e.target.value })}
+            onChange={(e) => this.setState({ text: e.target.value })}
             placeholder="Write a post!"
             rows={8}
             value={this.state.text}
           />
           <input
-            className={`pa3 bg-black-10 bn ${this.state.text &&
-              this.state.title &&
-              'dim pointer'}`}
+            className={`pa3 bg-black-10 bn ${
+              this.state.text && this.state.title && "dim pointer"
+            }`}
             disabled={!this.state.text}
             type="submit"
             value="Create"
-          />{' '}
+          />{" "}
         </form>
       </div>
-    )
+    );
   }
 
-  handlePost = async e => {
-    e.preventDefault()
-    const { title, text } = this.state
-    const wallId = this.props.wallId
+  handlePost = async (e) => {
+    e.preventDefault();
+    const { title, text } = this.state;
+    const wallId = this.props.wallId;
 
     await this.props.createPostMutation({
       variables: { title, text, wallId },
-    })
+    });
     if (!this.props.wall) {
-      this.props.history.replace('/feed')
+      this.props.history.replace("/feed");
     }
-    this.props.history.replace(`/profile/${wallId}`)
-  }
+    this.props.history.replace(`/profile/${wallId}`);
+  };
 }
 
 const CREATE_POST_MUTATION = gql`
@@ -69,10 +72,10 @@ const CREATE_POST_MUTATION = gql`
       wallId
     }
   }
-`
+`;
 
 const CreatePageWithMutation = graphql(CREATE_POST_MUTATION, {
-  name: 'createPostMutation',
-})(CreatePage)
+  name: "createPostMutation",
+})(CreatePage);
 
-export default withRouter(CreatePageWithMutation)
+export default withRouter(CreatePageWithMutation);
